@@ -1,0 +1,33 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/99jojhgk9t4agdmv/branch/main?svg=true)](https://ci.appveyor.com/project/paulnorthrop/profileCI/branch/main)
+[![R-CMD-check](https://github.com/paulnorthrop/profileCI/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/paulnorthrop/profileCI/actions/workflows/R-CMD-check.yaml)
+[![Coverage Status](https://codecov.io/github/paulnorthrop/profileCI/coverage.svg?branch=master)](https://app.codecov.io/github/paulnorthrop/profileCI?branch=master)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/profileCI)](https://cran.r-project.org/package=profileCI)
+[![Downloads (monthly)](https://cranlogs.r-pkg.org/badges/profileCI?color=brightgreen)](https://cran.r-project.org/package=profileCI)
+[![Downloads (total)](https://cranlogs.r-pkg.org/badges/grand-total/profileCI?color=brightgreen)](https://cran.r-project.org/package=profileCI)
+
+## Profiling a likelihood to calculate a confidence interval
+
+This package is in development.
+
+## Installation
+
+To get the current released version from CRAN:
+
+```{r installation, eval = FALSE}
+install.packages("profileCI")
+```
