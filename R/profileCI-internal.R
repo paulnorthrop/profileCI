@@ -110,19 +110,21 @@ profile_ci <- function(negated_loglik_fn, which = 1, level, mle, inc, epsilon,
 
   # If epsilon > 0 then use itp::itp()
   if (epsilon > 0) {
-    itp_function <- function(x, ...) {
-      opt <- stats::optim(sol_upper, profiling_fn, par_which = x, ...)
+    itp_function <- function(x, par, ...) {
+      opt <- stats::optim(par = par, fn = profiling_fn, par_which = x, ...)
       val <- -opt$value - conf_line
-      attr(val, "gev_pars") <- opt$par
+      attr(val, "parameters") <- opt$par
       return(val)
     }
     # Find the upper limit of the confidence interval
-    upper <- itp::itp(itp_function, interval = c(x1up, x2up),
+    upper <- itp::itp(f = itp_function, interval = c(x1up, x2up),
+                      par = sol_upper,
                       f.a = y1up - conf_line, f.b = y2up - conf_line,
                       epsilon = epsilon, ...)
     up_lim <- upper$root
     # Find the lower limit of the confidence interval
-    lower <- itp::itp(itp_function, interval = c(x1low, x2low),
+    lower <- itp::itp(f = itp_function, interval = c(x1low, x2low),
+                      par = sol_lower,
                       f.a = y1low - conf_line, f.b = y2low - conf_line,
                       epsilon = epsilon, ...)
     low_lim <- lower$root
@@ -138,15 +140,17 @@ profile_ci <- function(negated_loglik_fn, which = 1, level, mle, inc, epsilon,
     # the solutions found by itp::itp()
     lower_pars <- numeric(n_pars)
     lower_pars[which] <- lower$root
-    lower_pars[-which] <- attr(lower$f.root, "gev_pars")
-    names(lower_pars) <- c("mu", "sigma", "xi")
+    lower_pars[-which] <- attr(lower$f.root, "parameters")
+    names(lower_pars) <- names(mle)
     upper_pars <- numeric(n_pars)
     upper_pars[which] <- upper$root
-    upper_pars[-which] <- attr(upper$f.root, "gev_pars")
-    names(upper_pars) <- c("mu", "sigma", "xi")
+    upper_pars[-which] <- attr(upper$f.root, "parameters")
+    names(upper_pars) <- names(mle)
   } else {
     up_lim <- x1up + (conf_line - y1up) * (x2up - x1up) / (y2up - y1up)
     low_lim <- x1low + (conf_line - y1low) * (x2low - x1low) / (y2low - y1low)
+    lower_pars <- NULL
+    upper_pars <- NULL
   }
 
   par_prof <- c(lower = low_lim, mle_which, upper = up_lim)
@@ -160,14 +164,11 @@ profile_ci <- function(negated_loglik_fn, which = 1, level, mle, inc, epsilon,
 
 #' @keywords internal
 #' @rdname profileCI-internal
-faster_profile_ci <- function(negated_loglik_fn, which = 1, level, mle,
-                              ci_sym_mat, inc, epsilon, ci_init, ...) {
+faster_profile_ci <- function(negated_loglik_fn, which = 1, which_name, level,
+                              mle, ci_sym_mat, inc, epsilon, ...) {
 
   # The number of parameters
   n_pars <- length(mle)
-
-  # Determine whether were are profiling with respect to a return level
-  return_level <- grepl("level", names(mle)[1])
 
   # The -log-likelihood to profile over parameters in par other than par[which]
   profiling_fn <- function(par, par_which, ...) {
@@ -190,34 +191,14 @@ faster_profile_ci <- function(negated_loglik_fn, which = 1, level, mle,
   x2[1] <- x1[1] <- mle[which]
   v2[1] <- v1[1] <- max_loglik
 
-  # Extract the sample maxima
-  dots <- list(...)
-  data <- dots$maxima_notNA$maxima
-
   ### Upper tail ...
 
   # We start from the upper limit of the symmetric confidence interval, using
-  # gev_profile_init() to set initial estimates of the GEV parameters other
-  # than the parameter which
+  # ? to set initial estimates of the parameters other than the parameter which
 
-  # Call gev_profile_init() or return_level_profile_init()
-  if (return_level) {
-    upper_init <- ci_init$upper_init
-    par_which <- upper_init[1]
-    init <- upper_init[-1]
-  } else {
-    # which indicates the GEV parameter: mu, sigma or xi
-    if (which == 1) {
-      par_which <- ci_sym_mat[1, 2]
-      init <- gev_profile_init(data = data, mu = par_which)[-1]
-    } else if (which == 2) {
-      par_which <- ci_sym_mat[2, 2]
-      init <- gev_profile_init(data = data, sigma = par_which)[-2]
-    } else {
-      par_which <- ci_sym_mat[3, 2]
-      init <- gev_profile_init(data = data, xi = par_which)[-3]
-    }
-  }
+  par_which <- ci_sym_mat[which_name, 2]
+  init <- mle[-which]
+
   # Calculate the profile log-likelihood at the initial values
   # If this is greater than conf_line then we search upwards
   # If this is smaller than conf_line then we search downwards
@@ -260,29 +241,12 @@ faster_profile_ci <- function(negated_loglik_fn, which = 1, level, mle,
 
   ### Lower tail ...
 
-  # We start from the lower limit of the symmetric confidence interval, using
-  # gev_profile_init() to set initial estimates of the GEV parameters other
-  # than the parameter which
+  # We start from the upper limit of the symmetric confidence interval, using
+  # ? to set initial estimates of the parameters other than the parameter which
 
-  # Call gev_profile_init() or return_level_profile_init()
-  if (return_level) {
-    lower_init <- ci_init$lower_init
-    par_which <- lower_init[1]
-    init <- lower_init[-1]
-  } else {
-    # which indicates the GEV parameter: mu, sigma or xi
-    if (which == 1) {
-      par_which <- ci_sym_mat[1, 1]
-      init <- gev_profile_init(data = data, mu = par_which)[-1]
-    } else if (which == 2) {
-      par_which <- ci_sym_mat[2, 1]
-      init <- gev_profile_init(data = data, sigma = par_which)[-2]
-    } else {
-      par_which <- ci_sym_mat[3, 1]
-      init <- gev_profile_init(data = data, xi = par_which)[-3]
-    }
-  }
-  # Call gev_profile_init()
+  par_which <- ci_sym_mat[which_name, 1]
+  init <- mle[-which]
+
   # Calculate the profile log-likelihood at the initial values
   # If this is greater than conf_line then we search downwards
   # If this is smaller than conf_line then we search upwards
@@ -344,19 +308,21 @@ faster_profile_ci <- function(negated_loglik_fn, which = 1, level, mle,
 
   # If epsilon > 0 then use itp::itp()
   if (epsilon > 0) {
-    itp_function <- function(x, ...) {
-      opt <- stats::optim(sol_upper, profiling_fn, par_which = x, ...)
+    itp_function <- function(x, par, ...) {
+      opt <- stats::optim(par = par, profiling_fn, par_which = x, ...)
       val <- -opt$value - conf_line
-      attr(val, "gev_pars") <- opt$par
+      attr(val, "parameters") <- opt$par
       return(val)
     }
     # Find the upper limit of the confidence interval
     upper <- itp::itp(itp_function, interval = c(x1up, x2up),
+                      par = sol_upper,
                       f.a = y1up - conf_line, f.b = y2up - conf_line,
                       epsilon = epsilon, ...)
     up_lim <- upper$root
     # Find the lower limit of the confidence interval
     lower <- itp::itp(itp_function, interval = c(x1low, x2low),
+                      par = sol_lower,
                       f.a = y1low - conf_line, f.b = y2low - conf_line,
                       epsilon = epsilon, ...)
     low_lim <- lower$root
@@ -374,15 +340,17 @@ faster_profile_ci <- function(negated_loglik_fn, which = 1, level, mle,
     # the solutions found by itp::itp()
     lower_pars <- numeric(n_pars)
     lower_pars[which] <- lower$root
-    lower_pars[-which] <- attr(lower$f.root, "gev_pars")
-    names(lower_pars) <- c("mu", "sigma", "xi")
+    lower_pars[-which] <- attr(lower$f.root, "parameters")
+    names(lower_pars) <- names(mle)
     upper_pars <- numeric(n_pars)
     upper_pars[which] <- upper$root
-    upper_pars[-which] <- attr(upper$f.root, "gev_pars")
-    names(upper_pars) <- c("mu", "sigma", "xi")
+    upper_pars[-which] <- attr(upper$f.root, "parameters")
+    names(upper_pars) <- names(mle)
   } else {
     up_lim <- x1up + (conf_line - y1up) * (x2up - x1up) / (y2up - y1up)
     low_lim <- x1low + (conf_line - y1low) * (x2low - x1low) / (y2low - y1low)
+    lower_pars <- NULL
+    upper_pars <- NULL
   }
 
   par_prof <- c(lower = low_lim, mle_which, upper = up_lim)

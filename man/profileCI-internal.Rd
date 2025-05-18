@@ -12,12 +12,12 @@ profile_ci(negated_loglik_fn, which = 1, level, mle, inc, epsilon, ...)
 faster_profile_ci(
   negated_loglik_fn,
   which = 1,
+  which_name,
   level,
   mle,
   ci_sym_mat,
   inc,
   epsilon,
-  ci_init,
   ...
 )
 
