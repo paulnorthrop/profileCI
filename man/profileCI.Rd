@@ -94,6 +94,8 @@ x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32)
 x
 plot(x, parm = 1)
 plot(x, parm = "outcome2")
+
 # Can I speed things up by starting at the symmetric limits?
 # Do I need to estimate other parameters conditional on the parameter of interest?
+# Base this on the vcov matrix
 }

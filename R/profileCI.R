@@ -76,6 +76,9 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
 
   # Check and set parm
   cf <- coef(object)
+  if (is.null(names(cf))) {
+    names(cf) <- paste0("par", 1:length(cf))
+  }
   parm_names <- names(cf)
   if (is.character(parm)) {
     if (!all(is.element(parm, c(parm_names, "all")))) {
@@ -124,7 +127,7 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
   # An empty list in which to store the profile log-likelihood values
   for_plot <- list()
   # Set inc based on the estimated standard errors
-  ses <- sqrt(diag(vcov(object)))
+  ses <- sqrt(diag(vcov(object)))[parm]
   inc <- mult * ses / 100
   # Set up the negated log-likelihood function
   negated_loglik_fn <- function(parm, ...) {
@@ -134,8 +137,9 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
   for (i in 1:n_parm) {
     if (faster) {
       conf_list <- faster_profile_ci(negated_loglik_fn = negated_loglik_fn,
-                                     which = parm_numbers[i], level = level,
-                                     mle = coef(object),
+                                     which = parm_numbers[i],
+                                     which_name = parm[i],
+                                     level = level, mle = coef(object),
                                      ci_sym_mat = ci_sym_mat,
                                      inc = inc[i], epsilon = epsilon, ...)
     } else {
@@ -154,7 +158,7 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
   low <- paste0(100 * (1 - level)/ 2, "%")
   up <- paste0(100 - 100 * (1 - level)/ 2, "%")
   colnames(ci_mat) <- c(low, up)
-  rownames(ci_mat) <- parm_names
+  rownames(ci_mat) <- parm
   attr(ci_mat, "for_plot") <- for_plot
   attr(ci_mat, "crit") <- conf_list$crit
   attr(ci_mat, "level") <- level
