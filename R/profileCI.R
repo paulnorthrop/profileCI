@@ -34,26 +34,25 @@
 #'   log-likelihood is in search of a lower (upper) confidence limit is
 #'   started at the corresponding symmetric lower (upper) confidence limit.
 #' @param epsilon Only relevant if `profile = TRUE`. A numeric vector of values
-#'   passed as the argument `epsilon` to [`itp::itp`] to set the desired
-#'   accuracy of the confidence limits. `epsilon` is recycled to the length of
-#'   the parameter vector `parm`. If `epsilon[i]` is positive then the
-#'   [`itp::itp`] function is used to estimate the parameter values for which
-#'   the profile log-likelihood for parameter `i` drops to the value that
-#'   defines the confidence limits, once profiling has been successful in
-#'   finding an interval within which this value lies.
-#'   If `epsilon < 0` quadratic interpolation is used, which will tend to be
-#'   faster. If `epsilon = 0` then linear interpolation is used, which will
-#'   be faster still.
+#'   that determine the accuracy of the confidence limits. `epsilon` is
+#'   recycled to the length of the parameter vector `parm`.
+#'
+#'   * If `epsilon[i] > 0` then this value is passed as the argument `epsilon`
+#'     to the [`itp::itp`] function, which estimates the parameter values for
+#'     which the profile log-likelihood for parameter `i` drops to the value
+#'     that defines the confidence limits, once profiling has been successful
+#'     in finding an interval within which this value lies.
+#'
+#'    * If `epsilon[i] < 0` quadratic interpolation is used, which will tend to
+#'      be faster.
+#'
+#'   * If `epsilon[i] = 0` then linear interpolation is used, which will be
+#'     faster still.
 #' @param optim_args A list of further arguments (other than `par` and `fn`) to
 #'   pass to `[stats::optim]`.
-#' @details [lm loglik](https://stats.stackexchange.com/questions/73196/recalculate-log-likelihood-from-a-simple-r-lm-model)
-#'   **(Use lm as an example: prof = sym)**
-#'   **(Also include an example where this isn't the case: GEV?)**
-#'   **(glm's confint method uses profiling)**
-#'   **(Could I use ... for both arguments to loglik and optim? See chandwich::adjust_loglik())**
-#'   **(It may be easier not to do this)**
-#'   **(If faster = TRUE, use optim arguments lower and upper to constrain the symmetric limits)**
-#'   **(Store the same stuff that profile.glm does?)**
+#' @details The default, `epsilon = -1`, should work well enough in most
+#'   circumstances, but to achieve a specific accuracy set `epsilon` to be
+#'   a small positive value, for example, `epsilon = 1e-4`.
 #' @examples
 #' ## From example(glm)
 #' counts <- c(18,17,15,20,10,20,25,13,12)
@@ -78,20 +77,16 @@
 #' # Base this on the vcov matrix
 #'
 #' # To do
-#' # 1. Copy try(), quadratic interpolation etc from evmiss.
-#' #    profile_ci and faster_profile_ci
-#' # 2. Store lower_pars and upper_pars (cf things that profil.glm stores)
 #' # 3. Initial estimates for faster = TRUE
 #' #    Also for quadratic interpolation?
 #' #    Option for a user-supplied function
-#' # 4. Reduce mult until it works
 #' # 5. Perhaps rename faster to jump?
 #'
 #' x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
 #' x
 #' @export
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
-                      profile = TRUE, mult = 2, faster = FALSE, epsilon = 1e-4,
+                      profile = TRUE, mult = 2, faster = FALSE, epsilon = -1,
                       optim_args = list()) {
 
   # Check and set parm

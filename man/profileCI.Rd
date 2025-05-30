@@ -13,7 +13,7 @@ profileCI(
   profile = TRUE,
   mult = 2,
   faster = FALSE,
-  epsilon = 1e-04,
+  epsilon = -1,
   optim_args = list()
 )
 }
@@ -51,16 +51,19 @@ log-likelihood is in search of a lower (upper) confidence limit is
 started at the corresponding symmetric lower (upper) confidence limit.}
 
 \item{epsilon}{Only relevant if \code{profile = TRUE}. A numeric vector of values
-passed as the argument \code{epsilon} to \code{\link[itp:itp]{itp::itp}} to set the desired
-accuracy of the confidence limits. \code{epsilon} is recycled to the length of
-the parameter vector \code{parm}. If \code{epsilon[i]} is positive then the
-\code{\link[itp:itp]{itp::itp}} function is used to estimate the parameter values for which
-the profile log-likelihood for parameter \code{i} drops to the value that
-defines the confidence limits, once profiling has been successful in
-finding an interval within which this value lies.
-If \code{epsilon < 0} quadratic interpolation is used, which will tend to be
-faster. If \code{epsilon = 0} then linear interpolation is used, which will
-be faster still.}
+that determine the accuracy of the confidence limits. \code{epsilon} is
+recycled to the length of the parameter vector \code{parm}.
+\itemize{
+\item If \code{epsilon[i] > 0} then this value is passed as the argument \code{epsilon}
+to the \code{\link[itp:itp]{itp::itp}} function, which estimates the parameter values for
+which the profile log-likelihood for parameter \code{i} drops to the value
+that defines the confidence limits, once profiling has been successful
+in finding an interval within which this value lies.
+\item If \code{epsilon[i] < 0} quadratic interpolation is used, which will tend to
+be faster.
+\item If \code{epsilon[i] = 0} then linear interpolation is used, which will be
+faster still.
+}}
 
 \item{optim_args}{A list of further arguments (other than \code{par} and \code{fn}) to
 pass to \verb{[stats::optim]}.}
@@ -76,14 +79,9 @@ Use lower and upper, if present, to contrain symmetric intervals
 Optional function to calculate initial estimates, conditional on 1 parameter
 }
 \details{
-\href{https://stats.stackexchange.com/questions/73196/recalculate-log-likelihood-from-a-simple-r-lm-model}{lm loglik}
-\strong{(Use lm as an example: prof = sym)}
-\strong{(Also include an example where this isn't the case: GEV?)}
-\strong{(glm's confint method uses profiling)}
-\strong{(Could I use ... for both arguments to loglik and optim? See chandwich::adjust_loglik())}
-\strong{(It may be easier not to do this)}
-\strong{(If faster = TRUE, use optim arguments lower and upper to constrain the symmetric limits)}
-\strong{(Store the same stuff that profile.glm does?)}
+The default, \code{epsilon = -1}, should work well enough in most
+circumstances, but to achieve a specific accuracy set \code{epsilon} to be
+a small positive value, for example, \code{epsilon = 1e-4}.
 }
 \examples{
 ## From example(glm)
@@ -109,12 +107,10 @@ plot(x, parm = "outcome2")
 # Base this on the vcov matrix
 
 # To do
-# 1. Copy try(), quadratic interpolation etc from evmiss.
-#    profile_ci and faster_profile_ci
-# 2. Store lower_pars and upper_pars (cf things that profil.glm stores)
-# 2. Initial estimates for faster = TRUE
-# 3. Reduce mult until it works
-# 4. Perhaps rename faster to jump?
+# 3. Initial estimates for faster = TRUE
+#    Also for quadratic interpolation?
+#    Option for a user-supplied function
+# 5. Perhaps rename faster to jump?
 
 x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
 x
