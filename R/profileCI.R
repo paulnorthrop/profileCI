@@ -16,11 +16,15 @@
 #'   model parameters. If the likelihood is zero for any observation in the
 #'   data then the function should return `-Inf.`
 #' @param ... Further arguments to be passed to `loglik`.
-#' @param parm A character vector specifying the parameters for which
-#'   confidence intervals are calculated, either a vector of numbers or a vector
-#'   of names. The default, `which = "all"`, produces confidence intervals for
-#'   all the parameters.
+#' @param parm A vector specifying the parameters for which confidence
+#'   intervals are calculated, either a vector of numbers or a vector of names.
+#'   The default, `which = "all"`, produces confidence intervals for all the
+#'   parameters.
 #' @param level The confidence level required.  A numeric scalar in (0, 1).
+#' @param profile A logical scalar. If `TRUE` then confidence intervals
+#'   based on a profile log-likelihood are returned.  If `FALSE` then intervals
+#'   based on approximate large sample normal theory, which are symmetric about
+#'   the MLE, are returned.
 #' @param mult A positive numeric scalar. Controls the increment by which the
 #'   parameter of interest is increased/decreased when profiling above/below
 #'   its MLE. The increment is `mult * se / 100` where `se` is the estimated
@@ -37,7 +41,9 @@
 #'   the profile log-likelihood for parameter `i` drops to the value that
 #'   defines the confidence limits, once profiling has been successful in
 #'   finding an interval within which this value lies.
-#'   Otherwise, (if `epsilon <= 0`) linear interpolation is used.
+#'   If `epsilon < 0` quadratic interpolation is used, which will tend to be
+#'   faster. If `epsilon = 0` then linear interpolation is used, which will
+#'   be faster still.
 #' @param optim_args A list of further arguments (other than `par` and `fn`) to
 #'   pass to `[stats::optim]`.
 #' @details [lm loglik](https://stats.stackexchange.com/questions/73196/recalculate-log-likelihood-from-a-simple-r-lm-model)
@@ -47,6 +53,7 @@
 #'   **(Could I use ... for both arguments to loglik and optim? See chandwich::adjust_loglik())**
 #'   **(It may be easier not to do this)**
 #'   **(If faster = TRUE, use optim arguments lower and upper to constrain the symmetric limits)**
+#'   **(Store the same stuff that profile.glm does?)**
 #' @examples
 #' ## From example(glm)
 #' counts <- c(18,17,15,20,10,20,25,13,12)
@@ -69,9 +76,20 @@
 #' # Can I speed things up by starting at the symmetric limits?
 #' # Do I need to estimate other parameters conditional on the parameter of interest?
 #' # Base this on the vcov matrix
+#'
+#' # To do
+#' # 1. Copy try(), quadratic interpolation etc from evmiss.
+#' #    profile_ci and faster_profile_ci
+#' # 2. Store lower_pars and upper_pars (cf things that profil.glm stores)
+#' # 2. Initial estimates for faster = TRUE
+#' # 3. Reduce mult until it works
+#' # 4. Perhaps rename faster to jump?
+#'
+#' x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
+#' x
 #' @export
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
-                      mult = 2, faster = FALSE, epsilon = 1e-4,
+                      profile = TRUE, mult = 2, faster = FALSE, epsilon = 1e-4,
                       optim_args = list()) {
 
   # Check and set parm
@@ -103,8 +121,10 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     stop("''level'' must be in (0, 1)")
   }
 
-  # If faster = TRUE then we need the vcov method to calculate symmetric CIs
-  if (faster) {
+  # Use the vcov method to calculate symmetric CIs
+  # If profile = FALSE then we return these
+  # If faster = TRUE then we pass these intervals to faster_profile_ci()
+  if (!profile | faster) {
     z_val <- stats::qnorm(1 - (1 - level) / 2)
     mles <- coef(object)[parm]
     ses <- sqrt(diag(vcov(object)))[parm]
@@ -119,38 +139,81 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
   } else {
     ci_mat <- matrix(NA, ncol = 2, nrow = length(parm))
   }
+  # If profile = FALSE then return the symmetric intervals
+  if (!profile) {
+    rownames(ci_mat) <- parm
+    attr(ci_mat, "interval_type") <- "symmetric"
+    attr(ci_mat, "level") <- level
+    class(ci_mat) <- c("profileCI", "matrix", "array")
+    return(ci_mat)
+  }
 
   # The number of parameters
   n_parm <- length(parm)
+  # Force epsilon to have length equal to the number of parameters
+  epsilon <- rep_len(epsilon, n_parm)
   # Extract the parameter numbers to include
   parm_numbers <- (1:length(parm_names))[which_parm]
   # An empty list in which to store the profile log-likelihood values
   for_plot <- list()
-  # Set inc based on the estimated standard errors
+  # Calculate the estimated standard errors (to set inc below)
   ses <- sqrt(diag(vcov(object)))[parm]
-  inc <- mult * ses / 100
   # Set up the negated log-likelihood function
   negated_loglik_fn <- function(parm, ...) {
     return(-loglik(parm, ...))
   }
   # Loop over all parameters
+  # It is possible for stats::option() to throw an error, particularly if mult
+  # is large. This may reflect poor starting values. in an attempt to avoid
+  # this problem, we reduce (halve) mult iteratively down to the minimum value
+  # min_mult. If no fit is successful then we return NAs.
+  min_mult <- 1
+  save_mult <- mult
   for (i in 1:n_parm) {
+    success <- FALSE
     if (faster) {
-      conf_list <- faster_profile_ci(negated_loglik_fn = negated_loglik_fn,
-                                     which = parm_numbers[i],
-                                     which_name = parm[i],
-                                     level = level, mle = coef(object),
-                                     ci_sym_mat = ci_sym_mat,
-                                     inc = inc[i], epsilon = epsilon, ...)
+      while (mult >= min_mult) {
+        # Set inc based on the estimated standard errors
+        inc <- mult * ses / 100
+        conf_list <- faster_profile_ci(negated_loglik_fn = negated_loglik_fn,
+                                       which = parm_numbers[i],
+                                       which_name = parm[i],
+                                       level = level, mle = coef(object),
+                                       ci_sym_mat = ci_sym_mat,
+                                       inc = inc[i], epsilon = epsilon[i], ...)
+        if (!is.null(conf_list$optim_error)) {
+          mult <- mult / 2
+        } else {
+          success <- TRUE
+          mult <- min_mult - 1
+        }
+      }
     } else {
-      conf_list <- profile_ci(negated_loglik_fn = negated_loglik_fn,
-                              which = parm_numbers[i], level = level,
-                              mle = coef(object), inc = inc[i],
-                              epsilon = epsilon, ...)
+      while (mult >= min_mult) {
+        # Set inc based on the estimated standard errors
+        inc <- mult * ses / 100
+        conf_list <- profile_ci(negated_loglik_fn = negated_loglik_fn,
+                                which = parm_numbers[i], level = level,
+                                mle = coef(object), inc = inc[i],
+                                epsilon = epsilon[i], ...)
+        if (!is.null(conf_list$optim_error)) {
+          mult <- mult / 2
+        } else {
+          success <- TRUE
+          mult <- min_mult - 1
+        }
+      }
     }
-    ci_mat[i, ] <- conf_list$par_prof[c(1, 3)]
-    colnames(conf_list$for_plot)[1] <- paste0(parm[i], "_values")
-    for_plot[[i]] <- conf_list$for_plot
+    if (success) {
+      ci_mat[i, ] <- conf_list$par_prof[c(1, 3)]
+      colnames(conf_list$for_plot)[1] <- paste0(parm[i], "_values")
+      for_plot[[i]] <- conf_list$for_plot
+    } else {
+      ci_mat[i, ] <- matrix(NA, 1, 2)
+      for_plot[[i]] <- NA
+    }
+    # Reset mult
+    mult <- save_mult
   }
   names(for_plot) <- parm
 

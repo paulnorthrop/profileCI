@@ -10,6 +10,7 @@ profileCI(
   ...,
   parm = "all",
   level = 0.95,
+  profile = TRUE,
   mult = 2,
   faster = FALSE,
   epsilon = 1e-04,
@@ -27,12 +28,17 @@ data then the function should return \code{-Inf.}}
 
 \item{...}{Further arguments to be passed to \code{loglik}.}
 
-\item{parm}{A character vector specifying the parameters for which
-confidence intervals are calculated, either a vector of numbers or a vector
-of names. The default, \code{which = "all"}, produces confidence intervals for
-all the parameters.}
+\item{parm}{A vector specifying the parameters for which confidence
+intervals are calculated, either a vector of numbers or a vector of names.
+The default, \code{which = "all"}, produces confidence intervals for all the
+parameters.}
 
 \item{level}{The confidence level required.  A numeric scalar in (0, 1).}
+
+\item{profile}{A logical scalar. If \code{TRUE} then confidence intervals
+based on a profile log-likelihood are returned.  If \code{FALSE} then intervals
+based on approximate large sample normal theory, which are symmetric about
+the MLE, are returned.}
 
 \item{mult}{A positive numeric scalar. Controls the increment by which the
 parameter of interest is increased/decreased when profiling above/below
@@ -52,7 +58,9 @@ the parameter vector \code{parm}. If \code{epsilon[i]} is positive then the
 the profile log-likelihood for parameter \code{i} drops to the value that
 defines the confidence limits, once profiling has been successful in
 finding an interval within which this value lies.
-Otherwise, (if \code{epsilon <= 0}) linear interpolation is used.}
+If \code{epsilon < 0} quadratic interpolation is used, which will tend to be
+faster. If \code{epsilon = 0} then linear interpolation is used, which will
+be faster still.}
 
 \item{optim_args}{A list of further arguments (other than \code{par} and \code{fn}) to
 pass to \verb{[stats::optim]}.}
@@ -75,6 +83,7 @@ Optional function to calculate initial estimates, conditional on 1 parameter
 \strong{(Could I use ... for both arguments to loglik and optim? See chandwich::adjust_loglik())}
 \strong{(It may be easier not to do this)}
 \strong{(If faster = TRUE, use optim arguments lower and upper to constrain the symmetric limits)}
+\strong{(Store the same stuff that profile.glm does?)}
 }
 \examples{
 ## From example(glm)
@@ -98,4 +107,15 @@ plot(x, parm = "outcome2")
 # Can I speed things up by starting at the symmetric limits?
 # Do I need to estimate other parameters conditional on the parameter of interest?
 # Base this on the vcov matrix
+
+# To do
+# 1. Copy try(), quadratic interpolation etc from evmiss.
+#    profile_ci and faster_profile_ci
+# 2. Store lower_pars and upper_pars (cf things that profil.glm stores)
+# 2. Initial estimates for faster = TRUE
+# 3. Reduce mult until it works
+# 4. Perhaps rename faster to jump?
+
+x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
+x
 }
