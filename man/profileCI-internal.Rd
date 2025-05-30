@@ -5,6 +5,7 @@
 \alias{profile_ci}
 \alias{faster_profile_ci}
 \alias{gev_profile_init}
+\alias{lagrangianInterpolation}
 \title{Internal profileCI functions}
 \usage{
 profile_ci(negated_loglik_fn, which = 1, level, mle, inc, epsilon, ...)
@@ -22,6 +23,8 @@ faster_profile_ci(
 )
 
 gev_profile_init(data, mu, sigma, xi)
+
+lagrangianInterpolation(x0, y0)
 }
 \description{
 Internal profileCI functions

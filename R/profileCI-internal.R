@@ -48,7 +48,11 @@ profile_ci <- function(negated_loglik_fn, which = 1, level, mle, inc, epsilon,
   sol <- mle[-which]
   while (my_val > conf_line){
     par_which <- par_which + inc
-    opt <- stats::optim(sol, profiling_fn, par_which = par_which, ...)
+    opt <- try(stats::optim(sol, profiling_fn, par_which = par_which, ...),
+               silent = TRUE)
+    if (inherits(opt, "try-error")) {
+      return(list(optim_error = attr(opt, "condition")))
+    }
     sol <- opt$par
     ii <- ii + 1
     x2[ii] <- par_which
@@ -72,7 +76,11 @@ profile_ci <- function(negated_loglik_fn, which = 1, level, mle, inc, epsilon,
   sol <- mle[-which]
   while (my_val > conf_line){
     par_which <- par_which - inc
-    opt <- stats::optim(sol, profiling_fn, par_which = par_which, ...)
+    opt <- try(stats::optim(sol, profiling_fn, par_which = par_which, ...),
+               silent = TRUE)
+    if (inherits(opt, "try-error")) {
+      return(list(optim_error = attr(opt, "condition")))
+    }
     sol <- opt$par
     ii <- ii + 1
     x1[ii] <- par_which
@@ -96,61 +104,125 @@ profile_ci <- function(negated_loglik_fn, which = 1, level, mle, inc, epsilon,
   # Find where the curve crosses conf_line
   temp <- diff(prof_lik - conf_line > 0)
   # Find the upper limit of the confidence interval
-  loc <- which(temp == -1)
-  x1up <- par_values[loc]
-  x2up <- par_values[loc + 1]
-  y1up <- prof_lik[loc]
-  y2up <- prof_lik[loc + 1]
+  loc_upper <- which(temp == -1)
+  x1up <- par_values[loc_upper]
+  x2up <- par_values[loc_upper + 1]
+  y1up <- prof_lik[loc_upper]
+  y2up <- prof_lik[loc_upper + 1]
   # Find the lower limit of the confidence interval
-  loc <- which(temp == 1)
-  x1low <- par_values[loc]
-  x2low <- par_values[loc + 1]
-  y1low <- prof_lik[loc]
-  y2low <- prof_lik[loc + 1]
+  loc_lower <- which(temp == 1)
+  x1low <- par_values[loc_lower]
+  x2low <- par_values[loc_lower + 1]
+  y1low <- prof_lik[loc_lower]
+  y2low <- prof_lik[loc_lower + 1]
 
-  # If epsilon > 0 then use itp::itp()
-  if (epsilon > 0) {
-    itp_function <- function(x, par, ...) {
-      opt <- stats::optim(par = par, fn = profiling_fn, par_which = x, ...)
-      val <- -opt$value - conf_line
-      attr(val, "parameters") <- opt$par
-      return(val)
+  # If epsilon = 0 then use linear interpolation
+  # If epsilon < 0 then use quadratic interpolation
+  # If epsilon > 0 then use quadratic interpolation and then itp::itp()
+
+  up_lim <- x1up + (conf_line - y1up) * (x2up - x1up) / (y2up - y1up)
+  low_lim <- x1low + (conf_line - y1low) * (x2low - x1low) / (y2low - y1low)
+  if (epsilon != 0) {
+    # Calculate the values of the profile log-likelihood at these limits and
+    # use the 3 points (the bracketing points and this new point) to estimate
+    # the confidence limits by quadratic interpolation
+
+    # Upper
+    opt <- try(stats::optim(sol_upper, profiling_fn,
+                            par_which = up_lim, ...), silent = TRUE)
+#    # If optim errors then reset the initial values and try again
+#    #
+#    # Need to
+#    # (a) replace this with a general initial estimate function, or
+#    # (b) use the MLEs in coef()
+#    # (c) remove it entirely
+#    # Likewise for lower below
+#    if (inherits(opt, "try-error")) {
+#      init <- call_gev_profile_init(data = data, which = which,
+#                                    par_value = up_lim)
+#      opt <- try(stats::optim(init, profiling_fn, par_which = up_lim, ...),
+#                 silent = TRUE)
+#    }
+    up_new <- -opt$value
+    temp <- lagrangianInterpolation(c(y1up, up_new, y2up),
+                                    c(x1up, up_lim, x2up))
+    save_up_lim <- up_lim
+    up_lim <- temp(conf_line)
+
+    # Lower
+    opt <- try(stats::optim(sol_lower, profiling_fn,
+                            par_which = low_lim, ...), silent = TRUE)
+#    # If optim errors then reset the initial values and try again
+#    if (inherits(opt, "try-error")) {
+#      init <- call_gev_profile_init(data = data, which = which,
+#                                    par_value = low_lim)
+#      opt <- try(stats::optim(init, profiling_fn, par_which = low_lim, ...),
+#                 silent = TRUE)
+#    }
+    low_new <- -opt$value
+    temp <- lagrangianInterpolation(c(y1low, low_new, y2low),
+                                    c(x1low, low_lim, x2low))
+    save_low_lim <- low_lim
+    low_lim <- temp(conf_line)
+
+    # If epsilon > 0 then use itp::itp(), creating a new bracket from 2 of the
+    # 3 points available and set an initial estimate
+    if (epsilon > 0) {
+      itp_function <- function(x, par, ...) {
+        opt <- try(stats::optim(par = par, fn = profiling_fn, par_which = x,
+                                ...), silent = TRUE)
+#        if (inherits(opt, "try-error")) {
+#          init <- call_gev_profile_init(data = data, which = which,
+#                                        par_value = x)
+#          opt <- try(stats::optim(par = init, fn = profiling_fn, par_which = x,
+#                                  ...), silent = TRUE)
+#        }
+        val <- -opt$value - conf_line
+        attr(val, "parameters") <- opt$par
+        return(val)
+      }
+      # Find the upper limit of the confidence interval
+      if (up_new > 0) {
+        interval <- c(x1up, save_up_lim)
+      } else {
+        interval <- c(save_up_lim, x2up)
+      }
+      upper <- itp::itp(f = itp_function, interval = interval,
+                        par = sol_upper,
+                        f.a = y1up - conf_line, f.b = y2up - conf_line,
+                        epsilon = epsilon, ...)
+      up_lim <- upper$root
+      # Find the lower limit of the confidence interval
+      if (low_new > 0) {
+        interval <- c(x1low, save_low_lim)
+      } else {
+        interval <- c(save_low_lim, x2low)
+      }
+      lower <- itp::itp(f = itp_function, interval = interval,
+                        par = sol_lower,
+                        f.a = y1low - conf_line, f.b = y2low - conf_line,
+                        epsilon = epsilon, ...)
+      low_lim <- lower$root
+      # Add the approximate solutions to par_values and prof_lik
+      # Note that only the extreme ends of these vectors have prof_lik values
+      # below conf_line
+      n <- length(par_values)
+      par_values <- c(par_values[1:loc_lower], low_lim,
+                      par_values[(loc_lower + 1):loc_upper], up_lim,
+                      par_values[(loc_upper + 1):n])
+      prof_lik <- c(prof_lik[1:loc_lower], lower$f.root + conf_line,
+                    prof_lik[(loc_lower + 1):loc_upper],
+                    upper$f.root + conf_line, prof_lik[(loc_upper + 1):n])
+      # Save the parameter values that apply to the solutions from itp::itp()
+      lower_pars <- numeric(n_pars)
+      lower_pars[which] <- lower$root
+      lower_pars[-which] <- attr(lower$f.root, "parameters")
+      names(lower_pars) <- names(mle)
+      upper_pars <- numeric(n_pars)
+      upper_pars[which] <- upper$root
+      upper_pars[-which] <- attr(upper$f.root, "parameters")
+      names(upper_pars) <- names(mle)
     }
-    # Find the upper limit of the confidence interval
-    upper <- itp::itp(f = itp_function, interval = c(x1up, x2up),
-                      par = sol_upper,
-                      f.a = y1up - conf_line, f.b = y2up - conf_line,
-                      epsilon = epsilon, ...)
-    up_lim <- upper$root
-    # Find the lower limit of the confidence interval
-    lower <- itp::itp(f = itp_function, interval = c(x1low, x2low),
-                      par = sol_lower,
-                      f.a = y1low - conf_line, f.b = y2low - conf_line,
-                      epsilon = epsilon, ...)
-    low_lim <- lower$root
-    # Add the approximate solutions to par_values and prof_lik
-    # Note that only the extreme ends of these vectors have prof_lik values
-    # below conf_line
-    n <- length(par_values)
-    par_values <- c(par_values[1], low_lim, par_values[2:(n-1)], up_lim,
-                    par_values[n])
-    prof_lik <- c(prof_lik[1], lower$f.root + conf_line, prof_lik[2:(n-1)],
-                  upper$f.root + conf_line, prof_lik[n])
-    # Replace the values in lower_pars and upper_pars with those that apply to
-    # the solutions found by itp::itp()
-    lower_pars <- numeric(n_pars)
-    lower_pars[which] <- lower$root
-    lower_pars[-which] <- attr(lower$f.root, "parameters")
-    names(lower_pars) <- names(mle)
-    upper_pars <- numeric(n_pars)
-    upper_pars[which] <- upper$root
-    upper_pars[-which] <- attr(upper$f.root, "parameters")
-    names(upper_pars) <- names(mle)
-  } else {
-    up_lim <- x1up + (conf_line - y1up) * (x2up - x1up) / (y2up - y1up)
-    low_lim <- x1low + (conf_line - y1low) * (x2low - x1low) / (y2low - y1low)
-    lower_pars <- NULL
-    upper_pars <- NULL
   }
 
   par_prof <- c(lower = low_lim, mle_which, upper = up_lim)
@@ -160,7 +232,7 @@ profile_ci <- function(negated_loglik_fn, which = 1, level, mle, inc, epsilon,
               lower_pars = lower_pars, upper_pars = upper_pars))
 }
 
-# ======================== Faster GEV profiling function ==================== #
+# ========================== Faster profiling function ====================== #
 
 #' @keywords internal
 #' @rdname profileCI-internal
@@ -445,4 +517,15 @@ gev_profile_init <- function(data, mu, sigma, xi) {
   val <- c(mu, sigma, xi)
   names(val) <- c("mu", "sigma", "xi")
   return(val)
+}
+
+#' @keywords internal
+#' @rdname profileCI-internal
+lagrangianInterpolation <- function(x0, y0) {
+  f <- function(x) {
+    sum(y0 * sapply(seq_along(x0), \(j) {
+      prod(x - x0[-j])/prod(x0[j] - x0[-j])
+    }))
+  }
+  return(Vectorize(f, "x"))
 }
