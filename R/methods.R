@@ -55,6 +55,10 @@ print.profileCI <- function(x, ...) {
 #' @rdname profileCI_methods
 #' @export
 plot.profileCI <- function(x, parm = 1:nrow(x), add = TRUE, digits = 2, ...) {
+  # If symmetric intervals were produced then do not create a plot
+  if (attr(x, "interval_type") == "symmetric") {
+    stop("There is not plot for 'profile = FALSE' in profileCI()")
+  }
   # For which parameter is the plot required?
   # Work with the parameter number rather than the parameter name
   parm_names <- rownames(x)
