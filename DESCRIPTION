@@ -8,8 +8,7 @@ Authors@R: person(c("Paul", "J."), "Northrop", email = "p.northrop@ucl.ac.uk",
 Maintainer: Paul J. Northrop <p.northrop@ucl.ac.uk>
 Description: User-supplied log-likelihood or fitted model object created using
     maximum likelihood estimation. 
-    From `profileModel`: The confidence intervals methods refer to convex objectives. 
-    Objectives that result in disjoint confidence regions are not supported.
+    convex profile log-likelihoods only
 Imports: graphics,
     itp,
     stats
@@ -17,10 +16,10 @@ License: GPL (>= 3)
 LazyData: TRUE
 Encoding: UTF-8
 Depends:
-    R (>= 3.5)
+    R (>= 4.1.0)
 Suggests: nieve
-URL: https://paulnorthrop.github.io/evmiss/, https://github.com/paulnorthrop/evmiss
-BugReports: https://github.com/paulnorthrop/evmiss/issues
+URL: https://paulnorthrop.github.io/profileCI/, https://github.com/paulnorthrop/profileCI
+BugReports: https://github.com/paulnorthrop/profileCI/issues
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
