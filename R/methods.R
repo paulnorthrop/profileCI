@@ -57,7 +57,7 @@ print.profileCI <- function(x, ...) {
 plot.profileCI <- function(x, parm = 1:nrow(x), add = TRUE, digits = 2, ...) {
   # If symmetric intervals were produced then do not create a plot
   if (attr(x, "interval_type") == "symmetric") {
-    stop("There is not plot for 'profile = FALSE' in profileCI()")
+    stop("There is no plot for 'profile = FALSE' in profileCI().")
   }
   # For which parameter is the plot required?
   # Work with the parameter number rather than the parameter name
@@ -67,9 +67,12 @@ plot.profileCI <- function(x, parm = 1:nrow(x), add = TRUE, digits = 2, ...) {
     parm <- parm[1]
     if (!any(is.element(parm, 1:n_pars))) {
       pars_message <- paste0("{", paste0(1:n_pars, collapse = ","), "}")
-      stop("''If parm is numeric it must be in '', pars_message")
+      stop("''If parm is numeric it must be in ''", pars_message)
     }
   } else {
+    if (any(!is.element(parm, parm_names))) {
+      stop(parm, " was not included in ''parm'' in the call to profileCI().")
+    }
     parm <- which(is.element(parm_names, parm))
   }
   to_plot <- attr(x, "for_plot")[[parm]]
