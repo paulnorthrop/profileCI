@@ -57,13 +57,13 @@ profile_ci <- function(negated_loglik_fn, which = 1, level, mle, inc, epsilon,
   }
   # Save sol for possible use later by itp()
   sol_upper <- sol
-  # Also save the values of (mu, sigma, xi) after the profile log-likelihood
+  # Also save the values of the parameters after the profile log-likelihood
   # has dropped below conf_line. These may be useful in providing initial
   # values for profiling with respect to a return level
   upper_pars <- numeric(n_pars)
   upper_pars[which] <- par_which
   upper_pars[-which] <- sol_upper
-  names(upper_pars) <- c("mu", "sigma", "xi")
+  names(upper_pars) <- names(mle)
 
   ### Lower tail ...
   par_which <- mle_which
@@ -81,13 +81,13 @@ profile_ci <- function(negated_loglik_fn, which = 1, level, mle, inc, epsilon,
   }
   # Save sol for possible use later by itp()
   sol_lower <- sol
-  # Also save the values of (mu, sigma, xi) after the profile log-likelihood
+  # Also save the values of the parameters after the profile log-likelihood
   # has dropped below conf_line. These may be useful in providing initial
   # values for profiling with respect to a return level
   lower_pars <- numeric(n_pars)
   lower_pars[which] <- par_which
   lower_pars[-which] <- sol_lower
-  names(lower_pars) <- c("mu", "sigma", "xi")
+  names(lower_pars) <- names(mle)
 
   # Find the limits of the confidence interval
   prof_lik <- c(rev(v1), v2)
