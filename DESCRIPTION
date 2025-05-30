@@ -1,8 +1,8 @@
 Package: profileCI
 Type: Package
-Title: Profiling a likelihood to calculate a confidence interval
+Title: Profiling a log-likelihood to calculate a confidence interval
 Version: 1.0.0
-Date: 2025-03-14
+Date: 2025-05-30
 Authors@R: person(c("Paul", "J."), "Northrop", email = "p.northrop@ucl.ac.uk",
   role = c("aut", "cre", "cph"))
 Maintainer: Paul J. Northrop <p.northrop@ucl.ac.uk>
