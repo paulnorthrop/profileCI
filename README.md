@@ -1,0 +1,34 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+[![Appveyor Build
+status](https://ci.appveyor.com/api/projects/status/99jojhgk9t4agdmv/branch/main?svg=true)](https://ci.appveyor.com/project/paulnorthrop/profileCI/branch/main)
+[![R-CMD-check](https://github.com/paulnorthrop/profileCI/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/paulnorthrop/profileCI/actions/workflows/R-CMD-check.yaml)
+[![Coverage
+Status](https://codecov.io/github/paulnorthrop/profileCI/coverage.svg?branch=master)](https://app.codecov.io/github/paulnorthrop/profileCI?branch=master)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/profileCI)](https://cran.r-project.org/package=profileCI)
+[![Downloads
+(monthly)](https://cranlogs.r-pkg.org/badges/profileCI?color=brightgreen)](https://cran.r-project.org/package=profileCI)
+[![Downloads
+(total)](https://cranlogs.r-pkg.org/badges/grand-total/profileCI?color=brightgreen)](https://cran.r-project.org/package=profileCI)
+
+## Profiling a likelihood to calculate a confidence interval
+
+This package is in development.
+
+Only certain models:
+
+[ProfileLikelihood](https://CRAN.R-project.org/package=ProfileLikelihood)
+
+[profileModel](https://CRAN.R-project.org/package=profileModel)
+
+“The confidence intervals methods refer to convex objectives. Objectives
+that result in disjoint confidence regions are not currently supported.”
+
+## Installation
+
+To get the current released version from CRAN:
+
+``` r
+install.packages("profileCI")
+```
