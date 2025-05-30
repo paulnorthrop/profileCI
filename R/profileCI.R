@@ -81,9 +81,11 @@
 #' # 1. Copy try(), quadratic interpolation etc from evmiss.
 #' #    profile_ci and faster_profile_ci
 #' # 2. Store lower_pars and upper_pars (cf things that profil.glm stores)
-#' # 2. Initial estimates for faster = TRUE
-#' # 3. Reduce mult until it works
-#' # 4. Perhaps rename faster to jump?
+#' # 3. Initial estimates for faster = TRUE
+#' #    Also for quadratic interpolation?
+#' #    Option for a user-supplied function
+#' # 4. Reduce mult until it works
+#' # 5. Perhaps rename faster to jump?
 #'
 #' x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
 #' x
@@ -155,7 +157,10 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
   # Extract the parameter numbers to include
   parm_numbers <- (1:length(parm_names))[which_parm]
   # An empty list in which to store the profile log-likelihood values
+  # Likewise for the values of the parameters at the confidence limits
   for_plot <- list()
+  lower_pars <- list()
+  upper_pars <- list()
   # Calculate the estimated standard errors (to set inc below)
   ses <- sqrt(diag(vcov(object)))[parm]
   # Set up the negated log-likelihood function
@@ -208,9 +213,13 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
       ci_mat[i, ] <- conf_list$par_prof[c(1, 3)]
       colnames(conf_list$for_plot)[1] <- paste0(parm[i], "_values")
       for_plot[[i]] <- conf_list$for_plot
+      lower_pars[[i]] <- conf_list$lower_pars
+      upper_pars[[i]] <- conf_list$upper_pars
     } else {
       ci_mat[i, ] <- matrix(NA, 1, 2)
       for_plot[[i]] <- NA
+      lower_pars[[i]] <- NA
+      upper_pars[[i]] <- NA
     }
     # Reset mult
     mult <- save_mult
@@ -224,7 +233,15 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
   rownames(ci_mat) <- parm
   attr(ci_mat, "for_plot") <- for_plot
   attr(ci_mat, "crit") <- conf_list$crit
+  attr(ci_mat, "interval_type") <- "profile"
   attr(ci_mat, "level") <- level
+  if (any(epsilon > 0) || !faster) {
+    prof_names <- paste0("when profiling for ", parm_names)
+    names(lower_pars) <- prof_names[which_parm]
+    names(upper_pars) <- prof_names[which_parm]
+  }
+  attr(ci_mat, "lower_pars") <- lower_pars
+  attr(ci_mat, "upper_pars") <- upper_pars
   class(ci_mat) <- c("profileCI", "matrix", "array")
   return(ci_mat)
 }
