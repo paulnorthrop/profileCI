@@ -8,11 +8,19 @@ test_that("Symmetric intervals for Poisson GLM", {
 })
 
 # 2. Check that profile-based intervals are close enough to confint.glm()
-my_prof <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
-                     mult = 32, faster = TRUE)
+
 prof <- confint(glm.D93)
 
+# faster = TRUE
+my_prof <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
+                     mult = 32, faster = TRUE)
+test_that("Profile-based intervals for Poisson GLM", {
+  expect_equal(my_prof, prof, tolerance = 1e-5, ignore_attr = TRUE)
+})
 
+# faster = FALSE
+my_prof <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
+                     mult = 32, faster = FALSE)
 test_that("Profile-based intervals for Poisson GLM", {
   expect_equal(my_prof, prof, tolerance = 1e-5, ignore_attr = TRUE)
 })
