@@ -7,8 +7,10 @@ Authors@R: person(c("Paul", "J."), "Northrop", email = "p.northrop@ucl.ac.uk",
   role = c("aut", "cre", "cph"))
 Maintainer: Paul J. Northrop <p.northrop@ucl.ac.uk>
 Description: Provides tools for profiling a user-supplied log-likelihood 
-    function to calculate confidence intervals for model parameters. A plot
-    method is provided to visualise the log-likelihood and confidence interval.
+    function to calculate confidence intervals for model parameters. Speed of 
+    computation can be improved by starting the profiling from limits based on  
+    large sample normal theory. The accuracy of the limits can be set by the 
+    user. A plot method visualises the log-likelihood and confidence interval. 
     Only convex log-likelihoods are supported, that is, disjoint confidence 
     intervals will not be found.
 Imports: graphics,
