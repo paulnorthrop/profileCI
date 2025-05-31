@@ -1,7 +1,7 @@
 #' Calculate Log-Likelihood
 #'
 #' This is a generic function for calculating a log-likelihood for an object
-#' for input parameter values.
+#' at input parameter values.
 #'
 #' @param object A fitted model object.
 #' @param pars A numeric vector of parameters of the model.

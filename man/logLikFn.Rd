@@ -22,7 +22,7 @@ fitted model object \code{object} for parameter values \code{pars}.
 }
 \description{
 This is a generic function for calculating a log-likelihood for an object
-for input parameter values.
+at input parameter values.
 }
 \details{
 This generic function has been created to enable a function that
