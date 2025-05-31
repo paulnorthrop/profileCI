@@ -73,9 +73,10 @@ faster still.
 pass to \verb{[stats::optim]}.}
 }
 \description{
-Calculates confidence intervals for one or more parameters for a fitted
-model object. A function that returns the log-likelihood must also be
-supplied.
+Calculates confidence intervals for one or more parameters of a fitted
+model object. A function that returns the log-likelihood must be supplied,
+either directly via the argument \code{loglik} or using a \code{\link{logLikFn}} S3
+generic.
 }
 \details{
 The default, \code{epsilon = -1}, should work well enough in most

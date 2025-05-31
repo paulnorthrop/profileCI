@@ -1,8 +1,9 @@
 #' Confidence Intervals using Profile Likelihood
 #'
-#' Calculates confidence intervals for one or more parameters for a fitted
-#' model object. A function that returns the log-likelihood must also be
-#' supplied.
+#' Calculates confidence intervals for one or more parameters of a fitted
+#' model object. A function that returns the log-likelihood must be supplied,
+#' either directly via the argument `loglik` or using a [`logLikFn`] S3
+#' generic.
 #'
 #' @param object A fitted model object. This object must have a `coef` S3
 #'   method. If `faster = TRUE` then it must also have a `vcov` S3 method.
