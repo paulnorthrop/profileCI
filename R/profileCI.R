@@ -53,6 +53,22 @@
 #' @details The default, `epsilon = -1`, should work well enough in most
 #'   circumstances, but to achieve a specific accuracy set `epsilon` to be
 #'   a small positive value, for example, `epsilon = 1e-4`.
+#' @return An object of class `c("profileCI", "matrix", "array")`. A numeric
+#'   matrix with 2 columns giving the lower and upper confidence limits for
+#'   each parameter. These columns are labelled as `(1-level)/2` and
+#'   `1-(1-level)/2`, expressed as a percentage, by default `2.5%` and `97.5%`.
+#'   The row names are the names of the parameters supplied in `parm`.
+#'   If `profile = TRUE` then the returned object has extra attributes `crit`,
+#'   `level` and `for_plot`. The latter is a named list of length equal to the
+#'   number of parameters. Each component is a 2-column numeri matrix. The
+#'   first column contains values of the parameter and the second column the
+#'   corresponding values of the profile log-likelihood. The profile
+#'   log-likelihood is equal to the attribute `crit` at the limits of the
+#'   confidence interval. The attribute `level` is the input argument `level`.
+#'   If `faster = FALSE` or `epsilon > 0` then the attributes `lower_pars` and
+#'   `upper_pars` are lists that provide, for each profiling, the values of the
+#'   parameters for the last maximisation of the log-likelihood.
+#' @return A matrix with columns giving the  object `c("profileCI", "matrix", "array")``
 #' @seealso [`plot.profileCI`] and [`print.profileCI`].
 #' @examples
 #' ## From example(glm)

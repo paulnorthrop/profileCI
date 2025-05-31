@@ -72,6 +72,25 @@ faster still.
 \item{optim_args}{A list of further arguments (other than \code{par} and \code{fn}) to
 pass to \verb{[stats::optim]}.}
 }
+\value{
+An object of class \code{c("profileCI", "matrix", "array")}. A numeric
+matrix with 2 columns giving the lower and upper confidence limits for
+each parameter. These columns are labelled as \code{(1-level)/2} and
+\code{1-(1-level)/2}, expressed as a percentage, by default \verb{2.5\%} and \verb{97.5\%}.
+The row names are the names of the parameters supplied in \code{parm}.
+If \code{profile = TRUE} then the returned object has extra attributes \code{crit},
+\code{level} and \code{for_plot}. The latter is a named list of length equal to the
+number of parameters. Each component is a 2-column numeri matrix. The
+first column contains values of the parameter and the second column the
+corresponding values of the profile log-likelihood. The profile
+log-likelihood is equal to the attribute \code{crit} at the limits of the
+confidence interval. The attribute \code{level} is the input argument \code{level}.
+If \code{faster = FALSE} or \code{epsilon > 0} then the attributes \code{lower_pars} and
+\code{upper_pars} are lists that provide, for each profiling, the values of the
+parameters for the last maximisation of the log-likelihood.
+
+A matrix with columns giving the  object `c("profileCI", "matrix", "array")``
+}
 \description{
 Calculates confidence intervals for one or more parameters in a fitted
 model object. A function that returns the log-likelihood must be supplied,
