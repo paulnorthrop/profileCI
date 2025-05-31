@@ -27,10 +27,11 @@ test_that("Profile-based intervals for Poisson GLM, faster = FALSE", {
 
 # 3. Check that passing loglik and using logLikFn give the same results
 
-my_prof_logLikFn <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
-                              mult = 32, faster = TRUE)
+my_prof_logLikFn <- profileCI(glm.D93, profile = TRUE, mult = 32,
+                              faster = TRUE)
 test_that("Profile-based intervals for Poisson GLM, faster = FALSE", {
-  expect_equal(my_prof, my_prof_logLikFn, tolerance = 1e-5, ignore_attr = TRUE)
+  expect_equal(my_prof_faster, my_prof_logLikFn, tolerance = 1e-5,
+               ignore_attr = FALSE)
 })
 
 # 4. Tests with epsilon > 0
