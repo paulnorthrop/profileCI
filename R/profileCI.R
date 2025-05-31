@@ -53,6 +53,12 @@
 #' @details The default, `epsilon = -1`, should work well enough in most
 #'   circumstances, but to achieve a specific accuracy set `epsilon` to be
 #'   a small positive value, for example, `epsilon = 1e-4`.
+#'
+#'   The defaults `mult  = 32` and `faster = TRUE` are designed to calculate
+#'   confidence intervals fairly quickly. If the object returned from
+#'   `profileCI` is plotted, using [`plot.profileCI`], then we will not obtain
+#'   a smooth plot of a profile log-likelihood. Setting `faster = FALSE` and
+#'   reducing `mult`, perhaps to `8` or `16` should produce a smoother plot.
 #' @return An object of class `c("profileCI", "matrix", "array")`. A numeric
 #'   matrix with 2 columns giving the lower and upper confidence limits for
 #'   each parameter. These columns are labelled as `(1-level)/2` and
@@ -73,7 +79,7 @@
 #' @seealso [`plot.profileCI`] and [`print.profileCI`].
 #' @examples
 #' ## From example(glm)
-#' counts <- c(18,17,15,20,10,20,25,13,12)
+#' counts <- c(18, 17, 15, 20, 10, 20, 25, 13, 12)
 #' outcome <- gl(3, 1, 9)
 #' treatment <- gl(3, 3)
 #' glm.D93 <- glm(counts ~ outcome + treatment, family = poisson())
@@ -86,22 +92,19 @@
 #'   return(sum(loglik))
 #' }
 #'
-#' # Will be a bit slower than profile.glm() because glm.fit() is fast
-#' x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
-#' x
+#' # This will be a bit slower than profile.glm() because glm.fit() is fast
+#' prof <- profileCI(glm.D93, loglik = poisson_loglik)
+#' prof
 #' plot(x, parm = 1)
 #' plot(x, parm = "outcome2")
 #'
 #' # A logLikFn.glm S3 method is provided in profileCI so we do not need to
 #' # supply loglik explicitly
-#' x <- profileCI(glm.D93, mult = 32, faster = TRUE)
-#' x
-#'
-#' x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
-#' x
+#' prof <- profileCI(glm.D93)
+#' prof
 #' @export
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
-                      profile = TRUE, mult = 2, faster = FALSE, epsilon = -1,
+                      profile = TRUE, mult = 32, faster = TRUE, epsilon = -1,
                       optim_args = list()) {
   # Check that the model has at least 2 parameters
   cf <- coef(object)

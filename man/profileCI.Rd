@@ -11,8 +11,8 @@ profileCI(
   parm = "all",
   level = 0.95,
   profile = TRUE,
-  mult = 2,
-  faster = FALSE,
+  mult = 32,
+  faster = TRUE,
   epsilon = -1,
   optim_args = list()
 )
@@ -102,10 +102,16 @@ generic.
 The default, \code{epsilon = -1}, should work well enough in most
 circumstances, but to achieve a specific accuracy set \code{epsilon} to be
 a small positive value, for example, \code{epsilon = 1e-4}.
+
+The defaults \code{mult  = 32} and \code{faster = TRUE} are designed to calculate
+confidence intervals fairly quickly. If the object returned from
+\code{profileCI} is plotted, using \code{\link{plot.profileCI}}, then we will not obtain
+a smooth plot of a profile log-likelihood. Setting \code{faster = FALSE} and
+reducing \code{mult}, perhaps to \code{8} or \code{16} should produce a smoother plot.
 }
 \examples{
 ## From example(glm)
-counts <- c(18,17,15,20,10,20,25,13,12)
+counts <- c(18, 17, 15, 20, 10, 20, 25, 13, 12)
 outcome <- gl(3, 1, 9)
 treatment <- gl(3, 3)
 glm.D93 <- glm(counts ~ outcome + treatment, family = poisson())
@@ -118,19 +124,16 @@ poisson_loglik <- function(pars) {
   return(sum(loglik))
 }
 
-# Will be a bit slower than profile.glm() because glm.fit() is fast
-x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
-x
+# This will be a bit slower than profile.glm() because glm.fit() is fast
+prof <- profileCI(glm.D93, loglik = poisson_loglik)
+prof
 plot(x, parm = 1)
 plot(x, parm = "outcome2")
 
 # A logLikFn.glm S3 method is provided in profileCI so we do not need to
 # supply loglik explicitly
-x <- profileCI(glm.D93, mult = 32, faster = TRUE)
-x
-
-x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
-x
+prof <- profileCI(glm.D93)
+prof
 }
 \seealso{
 \code{\link{plot.profileCI}} and \code{\link{print.profileCI}}.
