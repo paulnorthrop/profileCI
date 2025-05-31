@@ -10,6 +10,10 @@
 #'   input parameter values and data. The first argument must be the vector of
 #'   model parameters. If the likelihood is zero for any observation in the
 #'   data then the function should return `-Inf.`
+#'
+#'   Alternatively, `loglik` does not need to be supplied if a [`logLikFn`] S3
+#'   method has been created for `object`. The `profileCI` package provides
+#'   `logLikFn.glm`, which is used in an example in **Examples**.
 #' @param ... Further arguments to be passed to `loglik`.
 #' @param parm A vector specifying the parameters for which confidence
 #'   intervals are calculated, either a vector of numbers or a vector of names.
@@ -57,16 +61,22 @@
 #' confint(glm.D93)
 #' confint.default(glm.D93)
 #'
-#' poisson_loglik <- function(par) {
-#'   lambda <- exp(model.matrix(glm.D93) %*% par)
+#' poisson_loglik <- function(pars) {
+#'   lambda <- exp(model.matrix(glm.D93) %*% pars)
 #'   loglik <- stats::dpois(x = counts, lambda = lambda, log = TRUE)
 #'   return(sum(loglik))
 #' }
+#'
 #' # Will be slower than profile.glm() because glm.fit() is fast
 #' x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32)
 #' x
 #' plot(x, parm = 1)
 #' plot(x, parm = "outcome2")
+#'
+#' # A logLikFn.glm S3 method is provided in profileCI so we do not need to
+#' # supply loglik explicitly
+#' x <- profileCI(glm.D93, mult = 32)
+#' x
 #'
 #' x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
 #' x
@@ -74,7 +84,21 @@
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
                       profile = TRUE, mult = 2, faster = FALSE, epsilon = -1,
                       optim_args = list()) {
-
+  # If loglik is missing then check whether object has a logLikFn method
+  # If it does then use it, otherwise throw an error
+  if (missing(loglik)) {
+    find_logLikFn <- function(x) {
+      return(!is.null(getS3method("logLikFn", x, optional = TRUE)))
+    }
+    has_logLikFnMethod <- sapply(class(object), FUN = find_logLikFn)
+    if (any(has_logLikFnMethod)) {
+      loglik <- function(pars) {
+        return(logLikFn(object, pars = pars))
+      }
+    } else {
+      stop("")
+    }
+  }
   # Check and set parm
   cf <- coef(object)
   if (is.null(names(cf))) {

@@ -24,7 +24,11 @@ method. If \code{faster = TRUE} then it must also have a \code{vcov} S3 method.}
 \item{loglik}{A named function that returns the log-likelihood based on
 input parameter values and data. The first argument must be the vector of
 model parameters. If the likelihood is zero for any observation in the
-data then the function should return \code{-Inf.}}
+data then the function should return \code{-Inf.}
+
+Alternatively, \code{loglik} does not need to be supplied if a \code{\link{logLikFn}} S3
+method has been created for \code{object}. The \code{profileCI} package provides
+\code{logLikFn.glm}, which is used in an example in \strong{Examples}.}
 
 \item{...}{Further arguments to be passed to \code{loglik}.}
 
@@ -86,16 +90,22 @@ glm.D93 <- glm(counts ~ outcome + treatment, family = poisson())
 confint(glm.D93)
 confint.default(glm.D93)
 
-poisson_loglik <- function(par) {
-  lambda <- exp(model.matrix(glm.D93) \%*\% par)
+poisson_loglik <- function(pars) {
+  lambda <- exp(model.matrix(glm.D93) \%*\% pars)
   loglik <- stats::dpois(x = counts, lambda = lambda, log = TRUE)
   return(sum(loglik))
 }
+
 # Will be slower than profile.glm() because glm.fit() is fast
 x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32)
 x
 plot(x, parm = 1)
 plot(x, parm = "outcome2")
+
+# A logLikFn.glm S3 method is provided in profileCI so we do not need to
+# supply loglik explicitly
+x <- profileCI(glm.D93, mult = 32)
+x
 
 x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
 x
