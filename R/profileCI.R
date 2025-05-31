@@ -69,15 +69,15 @@
 #'   return(sum(loglik))
 #' }
 #'
-#' # Will be slower than profile.glm() because glm.fit() is fast
-#' x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32)
+#' # Will be a bit slower than profile.glm() because glm.fit() is fast
+#' x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
 #' x
 #' plot(x, parm = 1)
 #' plot(x, parm = "outcome2")
 #'
 #' # A logLikFn.glm S3 method is provided in profileCI so we do not need to
 #' # supply loglik explicitly
-#' x <- profileCI(glm.D93, mult = 32)
+#' x <- profileCI(glm.D93, mult = 32, faster = TRUE)
 #' x
 #'
 #' x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)

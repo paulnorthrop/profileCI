@@ -86,26 +86,27 @@ a small positive value, for example, \code{epsilon = 1e-4}.
 \examples{
 ## From example(glm)
 counts <- c(18,17,15,20,10,20,25,13,12)
-outcome <- gl(3, 1, 9); treatment <- gl(3, 3)
+outcome <- gl(3, 1, 9)
+treatment <- gl(3, 3)
 glm.D93 <- glm(counts ~ outcome + treatment, family = poisson())
 confint(glm.D93)
 confint.default(glm.D93)
 
 poisson_loglik <- function(pars) {
   lambda <- exp(model.matrix(glm.D93) \%*\% pars)
-  loglik <- stats::dpois(x = counts, lambda = lambda, log = TRUE)
+  loglik <- stats::dpois(x = glm.D93$y, lambda = lambda, log = TRUE)
   return(sum(loglik))
 }
 
-# Will be slower than profile.glm() because glm.fit() is fast
-x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32)
+# Will be a bit slower than profile.glm() because glm.fit() is fast
+x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
 x
 plot(x, parm = 1)
 plot(x, parm = "outcome2")
 
 # A logLikFn.glm S3 method is provided in profileCI so we do not need to
 # supply loglik explicitly
-x <- profileCI(glm.D93, mult = 32)
+x <- profileCI(glm.D93, mult = 32, faster = TRUE)
 x
 
 x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
