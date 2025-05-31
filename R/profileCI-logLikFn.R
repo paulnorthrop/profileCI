@@ -4,6 +4,7 @@
 #' for input parameter values.
 #'
 #' @param object A fitted model object.
+#' @param pars A numeric vector of parameters of the model.
 #' @param ... Further arguments.
 #' @name logLikFn
 NULL
@@ -18,6 +19,6 @@ logLikFn <- function(object, pars, ...) {
 #' @export
 logLikFn.glm <- function(object, pars, ...) {
   lambda <- exp(model.matrix(object) %*% pars)
-  loglik <- stats::dpois(x = counts, lambda = lambda, log = TRUE)
+  loglik <- stats::dpois(x = object$y, lambda = lambda, log = TRUE)
   return(sum(loglik))
 }
