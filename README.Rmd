@@ -31,10 +31,11 @@ Only certain models:
 [profileModel](https://CRAN.R-project.org/package=profileModel)
 ```
 
+```{asis, echo = FALSE}
 ## Installation
 
 To get the current released version from CRAN:
-
-```{r installation, eval = FALSE}
+```
+```{r installation, eval = FALSE, echo = FALSE}
 install.packages("profileCI")
 ```

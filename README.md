@@ -15,11 +15,3 @@ Status](https://codecov.io/github/paulnorthrop/profileCI/coverage.svg?branch=mas
 ## Profiling a likelihood to calculate a confidence interval
 
 This package is in development.
-
-## Installation
-
-To get the current released version from CRAN:
-
-``` r
-install.packages("profileCI")
-```
