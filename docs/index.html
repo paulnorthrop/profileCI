@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Profiling a Log-Likelihood to Calculate a Confidence Interval">
-<meta name="description" content="Provides tools for profiling a user-supplied log-likelihood function to calculate confidence intervals for model parameters. A plot method is provided to visualise the log-likelihood and confidence interval. Only convex log-likelihoods are supported, that is, disjoint confidence intervals will not be found.">
-<meta property="og:description" content="Provides tools for profiling a user-supplied log-likelihood function to calculate confidence intervals for model parameters. A plot method is provided to visualise the log-likelihood and confidence interval. Only convex log-likelihoods are supported, that is, disjoint confidence intervals will not be found.">
+<meta name="description" content="Provides tools for profiling a user-supplied log-likelihood function to calculate confidence intervals for model parameters. Speed of computation can be improved by adjusting the step sizes in the profiling and/or starting the profiling from limits based on the approximate large sample normal distribution for the maximum likelihood estimator of a parameter. The accuracy of the limits can be set by the user. A plot method visualises the log-likelihood and confidence interval. Only convex log-likelihoods are supported, that is, disjoint confidence intervals will not be found.">
+<meta property="og:description" content="Provides tools for profiling a user-supplied log-likelihood function to calculate confidence intervals for model parameters. Speed of computation can be improved by adjusting the step sizes in the profiling and/or starting the profiling from limits based on the approximate large sample normal distribution for the maximum likelihood estimator of a parameter. The accuracy of the limits can be set by the user. A plot method visualises the log-likelihood and confidence interval. Only convex log-likelihoods are supported, that is, disjoint confidence intervals will not be found.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -47,9 +47,67 @@
 <div class="row">
   <main id="main" class="col-md-9">
 <div class="section level2">
-<h2 id="profiling-a-likelihood-to-calculate-a-confidence-interval">Profiling a likelihood to calculate a confidence interval<a class="anchor" aria-label="anchor" href="#profiling-a-likelihood-to-calculate-a-confidence-interval"></a>
+<h2 id="profiling-a-log-likelihood-to-calculate-a-confidence-interval">Profiling a log-likelihood to calculate a confidence interval<a class="anchor" aria-label="anchor" href="#profiling-a-log-likelihood-to-calculate-a-confidence-interval"></a>
 </h2>
-<p>This package is in development.</p>
+<p>This package computes confidence intervals based on profile log-likelihood for one or more parameters in a user-supplied fitted multiparameter model. The functionality of the main function, <code><a href="reference/profileCI.html">profileCI()</a></code>, is like that of <code>confint.glm</code>, which calculates confidence intervals for the parameters of a Generalised Linear Model (GLM).</p>
+<p>Speed of computation can be improved by starting the profiling from limits based on large sample normal theory. The accuracy of the limits can be set by the user. A plot method visualises the log-likelihood and confidence interval. Only convex log-likelihoods are supported, that is, disjoint confidence intervals will not be found.</p>
+</div>
+<div class="section level2">
+<h2 id="an-example">An example<a class="anchor" aria-label="anchor" href="#an-example"></a>
+</h2>
+<p>We illustrate the use of <code><a href="reference/profileCI.html">profileCI()</a></code> using an example from the help file for <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">stats::glm()</a></code>.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## From example(glm)</span></span>
+<span><span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">17</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">13</span>, <span class="fl">12</span><span class="op">)</span></span>
+<span><span class="va">outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span></span>
+<span><span class="va">treatment</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">glm.D93</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">counts</span> <span class="op">~</span> <span class="va">outcome</span> <span class="op">+</span> <span class="va">treatment</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># Intervals based on profile log-likelihood</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">glm.D93</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span><span class="co">#&gt;                  2.5 %      97.5 %</span></span>
+<span><span class="co">#&gt; (Intercept)  2.6958215  3.36655581</span></span>
+<span><span class="co">#&gt; outcome2    -0.8577018 -0.06255840</span></span>
+<span><span class="co">#&gt; outcome3    -0.6753696  0.08244089</span></span>
+<span><span class="co">#&gt; treatment2  -0.3932548  0.39325483</span></span>
+<span><span class="co">#&gt; treatment3  -0.3932548  0.39325483</span></span></code></pre></div>
+<p>To calculate these intervals using <code>profileCI</code> we provide a function that calculates the log-likelihood for this Poisson GLM for an input parameter vector <code>pars</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">poisson_loglik</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pars</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="va">glm.D93</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">pars</span><span class="op">)</span></span>
+<span>  <span class="va">loglik</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">dpois</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">glm.D93</span><span class="op">$</span><span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambda</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">loglik</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>The function <code><a href="reference/profileCI.html">profileCI()</a></code> profiles the log-likelihood, with respect to one parameter at a time. For a given value of this parameter the log-likelihood is maximised over the other parameters. The aim is to search below and above the MLE of the parameter until the profile log-likelihood drops to a level corresponding to the limits of the confidence interval of a desired confidence level.</p>
+<p>Two arguments can be used to affect the speed with which the confidence limits are obtained: <code>mult</code> determines the amount, as a percentage of the estimated standard error of the estimator of the parameter of interest, by which the value of the parameter is incremented when profiling. Larger values of <code>mult</code> should result in a faster calculation but increase the risk that one of the optimisations required will fail. If the argument <code>faster = TRUE</code> then the searches for the lower and upper confidence limits are started from limits based on the approximate large sample normal distribution for the maximum likelihood estimator of a parameter, rather than the maximum likelihood estimate.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://paulnorthrop.github.io/profileCI/" class="external-link">profileCI</a></span><span class="op">)</span></span>
+<span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/profileCI.html">profileCI</a></span><span class="op">(</span><span class="va">glm.D93</span>, loglik <span class="op">=</span> <span class="va">poisson_loglik</span>, mult <span class="op">=</span> <span class="fl">32</span>, faster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">prof</span></span>
+<span><span class="co">#&gt;                   2.5%       97.5%</span></span>
+<span><span class="co">#&gt; (Intercept)  2.6958271  3.36656670</span></span>
+<span><span class="co">#&gt; outcome2    -0.8576884 -0.06255488</span></span>
+<span><span class="co">#&gt; outcome3    -0.6753594  0.08244084</span></span>
+<span><span class="co">#&gt; treatment2  -0.3932489  0.39324886</span></span>
+<span><span class="co">#&gt; treatment3  -0.3932489  0.39324886</span></span></code></pre></div>
+<p>We can visualise the profile likelihood for a parameter using a plot method.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">prof</span>, parm <span class="op">=</span> <span class="st">"outcome2"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
+<p>To obtain smooth version of this plot, we call <code><a href="reference/profileCI.html">profileCI()</a></code> with the default values: <code>mult = 2</code> and <code>faster = FALSE</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/profileCI.html">profileCI</a></span><span class="op">(</span><span class="va">glm.D93</span>, loglik <span class="op">=</span> <span class="va">poisson_loglik</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">prof</span>, parm <span class="op">=</span> <span class="st">"outcome2"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="100%"></p>
+<p>By default, once it has been determined that a limit lies between two values of the parameter, quadratic interpolation is used to estimate the value of the limit. If a specific degree of accuracy is required then this can be set by passing a positive tolerance <code>epsilon</code> to the <code>itp</code> function in the <a href="https://cran.r-project.org/package=itp" class="external-link">itp package</a>.</p>
+<p>An alternative to passing the log-likelihood function using the argument <code>loglik</code> is to provide the same function via a <code>logLikFn</code> S3 method for the fitted model object.</p>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>To get the current released version from CRAN:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"profileCI"</span><span class="op">)</span></span></code></pre></div>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
