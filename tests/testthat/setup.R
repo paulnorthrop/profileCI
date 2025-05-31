@@ -9,6 +9,6 @@ confint.default(glm.D93)
 
 poisson_loglik <- function(par) {
   lambda <- exp(model.matrix(glm.D93) %*% par)
-  loglik <- stats::dpois(x = counts, lambda = lambda, log = TRUE)
+  loglik <- stats::dpois(x = glm.D93$y, lambda = lambda, log = TRUE)
   return(sum(loglik))
 }
