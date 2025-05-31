@@ -20,7 +20,8 @@
 #'   but will be triangular in the middle.
 #' @return `print.profileCI`: the argument `x` is returned, invisibly.
 #'
-#'   `plot.profileCI`: nothing. Only the plots are produced.
+#'   `plot.profileCI`: a numeric vector containing the confidence interval
+#'   for the parameter chosen for the plot.
 #' @section Examples: See [`profileCI`].
 #' @seealso [`profileCI`].
 #' @name profileCI_methods
@@ -93,5 +94,5 @@ plot.profileCI <- function(x, parm = 1:nrow(x), add = TRUE, digits = 2, ...) {
     legend_text <- paste0(level, "% CI: (", rlimits[1], ",", rlimits[2], ")")
     graphics::legend("bottom", legend = legend_text)
   }
-  return(invisible())
+  return(invisible(limits))
 }

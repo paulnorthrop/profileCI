@@ -35,7 +35,8 @@ limits in the legend, if \code{add = TRUE}.}
 \value{
 \code{print.profileCI}: the argument \code{x} is returned, invisibly.
 
-\code{plot.profileCI}: nothing. Only the plots are produced.
+\code{plot.profileCI}: a numeric vector containing the confidence interval
+for the parameter chosen for the plot.
 }
 \description{
 Methods for objects of class \code{"profileCI"} returned from \code{\link{profileCI}}.
