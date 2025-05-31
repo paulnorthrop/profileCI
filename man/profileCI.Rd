@@ -97,16 +97,6 @@ x
 plot(x, parm = 1)
 plot(x, parm = "outcome2")
 
-# Can I speed things up by starting at the symmetric limits?
-# Do I need to estimate other parameters conditional on the parameter of interest?
-# Base this on the vcov matrix
-
-# To do
-# 3. Initial estimates for faster = TRUE
-#    Also for quadratic interpolation?
-#    Option for a user-supplied function
-# 5. Perhaps rename faster to jump?
-
 x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
 x
 }
