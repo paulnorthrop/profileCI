@@ -91,11 +91,34 @@ prof
 #> treatment3  -0.3932489  0.39324886
 ```
 
+We can visualise the profile likelihood for a parameter using a plot
+method.
+
+``` r
+plot(prof, parm = "outcome2")
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+
+To obtain smooth version of this plot, we call `profileCI()` with the
+default values: `mult = 2` and `faster = FALSE`.
+
+``` r
+prof <- profileCI(glm.D93, loglik = poisson_loglik)
+plot(prof, parm = "outcome2")
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
 By default, once it has been determined that a limit lies between two
 values of the parameter, quadratic interpolation is used to estimate the
 value of the limit. If a specific degree of accuracy is required then
 this can be set by passing a positive tolerance `epsilon` to the `itp`
 function in the [itp package](https://cran.r-project.org/package=itp).
+
+An alternative to passing the log-likelihood function using the argument
+`loglik` is to provide the same function via a `logLikFn` S3 method for
+the fitted model object.
 
 ## Installation
 
