@@ -1,6 +1,6 @@
 #' Confidence Intervals using Profile Likelihood
 #'
-#' Calculates confidence intervals for one or more parameters of a fitted
+#' Calculates confidence intervals for one or more parameters in a fitted
 #' model object. A function that returns the log-likelihood must be supplied,
 #' either directly via the argument `loglik` or using a [`logLikFn`] S3
 #' generic.
@@ -85,6 +85,11 @@
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
                       profile = TRUE, mult = 2, faster = FALSE, epsilon = -1,
                       optim_args = list()) {
+  # Check that the model has at least 2 parameters
+  cf <- coef(object)
+  if (length(cf) < 2) {
+    stop("The model must have more than one parameter.")
+  }
   # If loglik is missing then check whether object has a logLikFn method
   # If it does then use it, otherwise throw an error
   if (missing(loglik)) {
@@ -101,7 +106,6 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     }
   }
   # Check and set parm
-  cf <- coef(object)
   if (is.null(names(cf))) {
     names(cf) <- paste0("par", 1:length(cf))
   }

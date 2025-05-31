@@ -73,7 +73,7 @@ faster still.
 pass to \verb{[stats::optim]}.}
 }
 \description{
-Calculates confidence intervals for one or more parameters of a fitted
+Calculates confidence intervals for one or more parameters in a fitted
 model object. A function that returns the log-likelihood must be supplied,
 either directly via the argument \code{loglik} or using a \code{\link{logLikFn}} S3
 generic.
