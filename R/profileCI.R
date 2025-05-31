@@ -193,7 +193,8 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
       while (mult >= min_mult) {
         # Set inc based on the estimated standard errors
         inc <- mult * ses / 100
-        conf_list <- profile_ci(negated_loglik_fn = negated_loglik_fn,
+        conf_list <- profile_ci(object = object,
+                                negated_loglik_fn = negated_loglik_fn,
                                 which = parm_numbers[i], level = level,
                                 mle = coef(object), inc = inc[i],
                                 epsilon = epsilon[i], ...)
