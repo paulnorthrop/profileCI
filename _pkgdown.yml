@@ -1,0 +1,33 @@
+destination: docs
+
+url: https://github.com/paulnorthrop/profileCI
+
+development:
+  mode: release
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+#template:
+#  params:
+#    bootswatch: paper
+
+reference:
+  - title: Package
+    desc: ~
+    contents:
+      - "profileCI-package"
+  - title: Calculate confidence intervals
+    desc: ~
+    contents:
+      - "profileCI"
+  - title: S3 methods
+    desc: ~
+    contents:
+      - "plot.profileCI"
+      - "print.profileCI"
+  - title: Calculate Log-Likelihood S3 method
+    desc: ~
+    contents:
+      - "logLikFn"
