@@ -4,32 +4,32 @@
 #' @param x An object inheriting from class `profileCI"`, a result of a call
 #'   to [`"profileCI"`].
 #' @param ... Further arguments. For `print."profileCI"` to pass arguments to
-#'   [`print`]. For `plot."profileCI"` to pass graphical parameters to
+#'   [`print`]. For `plot.profileCI` to pass graphical parameters to
 #'   [`graphics::plot`] to create the initial plot of the profile
 #'   log-likelihood.
-#' @details `print."profileCI"`. A numeric matrix with 2 columns giving the
+#' @details `print.profileCI`. A numeric matrix with 2 columns giving the
 #'   lower and upper confidence limits for the parameters specified by the
-#'   argument `parm` in [`"profileCI"`]. These columns are labelled as
+#'   argument `parm` in [`profileCI`]. These columns are labelled as
 #'   `(1-level)/2` and `1-(1-level)/2`, expressed as a percentage, by default
 #'   `2.5%` and `97.5%`.
 #'
-#'   `plot."profileCI"`. A plot is produced of the profile log-likelihood for
+#'   `plot.profileCI`. A plot is produced of the profile log-likelihood for
 #'   the parameter chosen by `parm`. Only the parameter values used to profile
-#'   the log-likelihood in the call to [`"profileCI"`] are included, so
+#'   the log-likelihood in the call to [`profileCI`] are included, so
 #'   if `faster = TRUE` was used then the plot will not be of a smooth curve
 #'   but will be triangular in the middle.
 #' @return `print."profileCI"`: the argument `x` is returned, invisibly.
 #'
-#'   `plot."profileCI"`: nothing. Only the plots are produced.
-#' @section Examples: See [`"profileCI"`].
+#'   `plot.profileCI`: nothing. Only the plots are produced.
+#' @section Examples: See [`profileCI`].
 #' @seealso [`profileCI`].
 #' @name profileCI_methods
 NULL
 ## NULL
 
-# ============================ print.confint_gev ============================ #
+# ============================= print.profileCI ============================= #
 
-#' Print method for objects of class `"confint_gev"`
+#' Print method for objects of class `"profileCI"`
 #'
 #' @rdname profileCI_methods
 #' @export
@@ -38,7 +38,7 @@ print.profileCI <- function(x, ...) {
   return(invisible(x))
 }
 
-# ============================= plot.confint_gev ============================ #
+# ============================== plot.profileCI ============================= #
 
 #' Plot method for objects of class `"profileCI"`
 #'

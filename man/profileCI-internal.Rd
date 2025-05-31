@@ -4,7 +4,6 @@
 \alias{profileCI-internal}
 \alias{profile_ci}
 \alias{faster_profile_ci}
-\alias{gev_profile_init}
 \alias{lagrangianInterpolation}
 \alias{initial_mvn}
 \title{Internal profileCI functions}
@@ -23,8 +22,6 @@ faster_profile_ci(
   epsilon,
   ...
 )
-
-gev_profile_init(data, mu, sigma, xi)
 
 lagrangianInterpolation(x0, y0)
 

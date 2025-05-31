@@ -15,7 +15,7 @@
 to \code{\link{"profileCI"}}.}
 
 \item{...}{Further arguments. For \verb{print."profileCI"} to pass arguments to
-\code{\link{print}}. For \verb{plot."profileCI"} to pass graphical parameters to
+\code{\link{print}}. For \code{plot.profileCI} to pass graphical parameters to
 \code{\link[graphics:plot.default]{graphics::plot}} to create the initial plot of the profile
 log-likelihood.}
 
@@ -35,26 +35,26 @@ limits in the legend, if \code{add = TRUE}.}
 \value{
 \verb{print."profileCI"}: the argument \code{x} is returned, invisibly.
 
-\verb{plot."profileCI"}: nothing. Only the plots are produced.
+\code{plot.profileCI}: nothing. Only the plots are produced.
 }
 \description{
 Methods for objects of class \code{"profileCI"} returned from \code{\link{profileCI}}.
 }
 \details{
-\verb{print."profileCI"}. A numeric matrix with 2 columns giving the
+\code{print.profileCI}. A numeric matrix with 2 columns giving the
 lower and upper confidence limits for the parameters specified by the
-argument \code{parm} in \code{\link{"profileCI"}}. These columns are labelled as
+argument \code{parm} in \code{\link{profileCI}}. These columns are labelled as
 \code{(1-level)/2} and \code{1-(1-level)/2}, expressed as a percentage, by default
 \verb{2.5\%} and \verb{97.5\%}.
 
-\verb{plot."profileCI"}. A plot is produced of the profile log-likelihood for
+\code{plot.profileCI}. A plot is produced of the profile log-likelihood for
 the parameter chosen by \code{parm}. Only the parameter values used to profile
-the log-likelihood in the call to \code{\link{"profileCI"}} are included, so
+the log-likelihood in the call to \code{\link{profileCI}} are included, so
 if \code{faster = TRUE} was used then the plot will not be of a smooth curve
 but will be triangular in the middle.
 }
 \section{Examples}{
- See \code{\link{"profileCI"}}.
+ See \code{\link{profileCI}}.
 }
 
 \seealso{

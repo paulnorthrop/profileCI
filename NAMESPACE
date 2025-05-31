@@ -3,3 +3,4 @@
 S3method(plot,profileCI)
 S3method(print,profileCI)
 export(profileCI)
+import(stats)

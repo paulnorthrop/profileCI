@@ -1,14 +1,16 @@
 Package: profileCI
 Type: Package
-Title: Profiling a log-likelihood to calculate a confidence interval
+Title: Profiling a Log-Likelihood to Calculate a Confidence Interval
 Version: 1.0.0
 Date: 2025-05-30
 Authors@R: person(c("Paul", "J."), "Northrop", email = "p.northrop@ucl.ac.uk",
   role = c("aut", "cre", "cph"))
 Maintainer: Paul J. Northrop <p.northrop@ucl.ac.uk>
-Description: User-supplied log-likelihood or fitted model object created using
-    maximum likelihood estimation. 
-    convex profile log-likelihoods only
+Description: Provides tools for profiling a user-supplied log-likelihood 
+    function to calculate confidence intervals for model parameters. A plot
+    method is provided to visualise the log-likelihood and confidence interval.
+    Only convex log-likelihoods are supported, that is, disjoint confidence 
+    intervals will not be found.
 Imports: graphics,
     itp,
     stats

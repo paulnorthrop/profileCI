@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^checks$
 ^\.github$
+^README\.Rmd$
+^LICENSE\.md$
