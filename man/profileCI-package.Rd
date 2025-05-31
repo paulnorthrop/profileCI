@@ -5,19 +5,21 @@
 \alias{profileCI-package}
 \title{profileCI: Profiling a Log-Likelihood to Calculate a Confidence Interval}
 \description{
-Describe
+Provides tools for profiling a user-supplied log-likelihood function to
+calculate confidence intervals for model parameters. Speed of computation
+can be improved by adjusting the step sizes in the profiling and/or starting
+the profiling from limits based on the approximate large sample normal
+distribution for the maximum likelihood estimator of a parameter. The
+accuracy of the limits can be set by the user. A plot method visualises the
+log-likelihood and confidence interval. Only convex log-likelihoods are
+supported, that is, disjoint confidence intervals will not be found.
 }
 \details{
-The main function is \code{\link{profileCI}}.
+The main function is \code{\link{profileCI}}, which profiles the
+log-likelihood, with respect to one parameter at a time.
 }
 \seealso{
-Useful links:
-\itemize{
-  \item \url{https://paulnorthrop.github.io/profileCI/}
-  \item \url{https://github.com/paulnorthrop/profileCI}
-  \item Report bugs at \url{https://github.com/paulnorthrop/profileCI/issues}
-}
-
+\code{\link{profileCI}} and \code{\link{plot.profileCI}}.
 }
 \author{
 \strong{Maintainer}: Paul J. Northrop \email{p.northrop@ucl.ac.uk} [copyright holder]
