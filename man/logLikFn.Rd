@@ -12,6 +12,8 @@ logLikFn(object, pars, ...)
 \arguments{
 \item{object}{A fitted model object.}
 
+\item{pars}{A numeric vector of parameters of the model.}
+
 \item{...}{Further arguments.}
 }
 \description{
