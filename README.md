@@ -16,15 +16,6 @@ Status](https://codecov.io/github/paulnorthrop/profileCI/coverage.svg?branch=mas
 
 This package is in development.
 
-Only certain models:
-
-[ProfileLikelihood](https://CRAN.R-project.org/package=ProfileLikelihood)
-
-[profileModel](https://CRAN.R-project.org/package=profileModel)
-
-“The confidence intervals methods refer to convex objectives. Objectives
-that result in disjoint confidence regions are not currently supported.”
-
 ## Installation
 
 To get the current released version from CRAN:
