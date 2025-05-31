@@ -12,7 +12,7 @@
 }
 \arguments{
 \item{x}{An object inheriting from class \verb{profileCI"}, a result of a call
-to \code{\link{"profileCI"}}.}
+to \code{\link{profileCI}}.}
 
 \item{...}{Further arguments. For \verb{print."profileCI"} to pass arguments to
 \code{\link{print}}. For \code{plot.profileCI} to pass graphical parameters to
@@ -33,7 +33,7 @@ confidence interval.}
 limits in the legend, if \code{add = TRUE}.}
 }
 \value{
-\verb{print."profileCI"}: the argument \code{x} is returned, invisibly.
+\code{print.profileCI}: the argument \code{x} is returned, invisibly.
 
 \code{plot.profileCI}: nothing. Only the plots are produced.
 }

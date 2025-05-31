@@ -2,7 +2,7 @@
 #'
 #' Methods for objects of class `"profileCI"` returned from [`profileCI`].
 #' @param x An object inheriting from class `profileCI"`, a result of a call
-#'   to [`"profileCI"`].
+#'   to [`profileCI`].
 #' @param ... Further arguments. For `print."profileCI"` to pass arguments to
 #'   [`print`]. For `plot.profileCI` to pass graphical parameters to
 #'   [`graphics::plot`] to create the initial plot of the profile
@@ -18,7 +18,7 @@
 #'   the log-likelihood in the call to [`profileCI`] are included, so
 #'   if `faster = TRUE` was used then the plot will not be of a smooth curve
 #'   but will be triangular in the middle.
-#' @return `print."profileCI"`: the argument `x` is returned, invisibly.
+#' @return `print.profileCI`: the argument `x` is returned, invisibly.
 #'
 #'   `plot.profileCI`: nothing. Only the plots are produced.
 #' @section Examples: See [`profileCI`].
