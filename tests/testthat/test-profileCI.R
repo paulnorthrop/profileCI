@@ -12,10 +12,10 @@ test_that("Symmetric intervals for Poisson GLM", {
 prof <- confint(glm.D93)
 
 # faster = TRUE
-my_prof <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
-                     mult = 32, faster = TRUE)
+my_prof_faster <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
+                            mult = 32, faster = TRUE)
 test_that("Profile-based intervals for Poisson GLM, faster = TRUE", {
-  expect_equal(my_prof, prof, tolerance = 1e-5, ignore_attr = TRUE)
+  expect_equal(my_prof_faster, prof, tolerance = 1e-5, ignore_attr = TRUE)
 })
 
 # faster = FALSE
@@ -25,7 +25,15 @@ test_that("Profile-based intervals for Poisson GLM, faster = FALSE", {
   expect_equal(my_prof, prof, tolerance = 1e-5, ignore_attr = TRUE)
 })
 
-# 3. Tests with epsilon > 0
+# 3. Check that passing loglik and using logLikFn give the same results
+
+my_prof_logLikFn <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
+                              mult = 32, faster = TRUE)
+test_that("Profile-based intervals for Poisson GLM, faster = FALSE", {
+  expect_equal(my_prof, my_prof_logLikFn, tolerance = 1e-5, ignore_attr = TRUE)
+})
+
+# 4. Tests with epsilon > 0
 
 my_prof_fast <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
                           mult = 32, faster = TRUE, epsilon = 1e-4)
