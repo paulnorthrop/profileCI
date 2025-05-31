@@ -14,13 +14,23 @@ prof <- confint(glm.D93)
 # faster = TRUE
 my_prof <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
                      mult = 32, faster = TRUE)
-test_that("Profile-based intervals for Poisson GLM", {
+test_that("Profile-based intervals for Poisson GLM, faster = TRUE", {
   expect_equal(my_prof, prof, tolerance = 1e-5, ignore_attr = TRUE)
 })
 
 # faster = FALSE
 my_prof <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
                      mult = 32, faster = FALSE)
-test_that("Profile-based intervals for Poisson GLM", {
+test_that("Profile-based intervals for Poisson GLM, faster = FALSE", {
   expect_equal(my_prof, prof, tolerance = 1e-5, ignore_attr = TRUE)
+})
+
+# 3. Tests with epsilon > 0
+
+my_prof_fast <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
+                          mult = 32, faster = TRUE, epsilon = 1e-4)
+my_prof_slow <- profileCI(glm.D93, loglik = poisson_loglik, profile = TRUE,
+                          mult = 32, faster = FALSE, epsilon = 1e-4)
+test_that("Profile-based intervals for Poisson GLM, faster = TRUE, epsilon > 0", {
+  expect_equal(my_prof_fast, my_prof_slow, tolerance = 1e-3, ignore_attr = TRUE)
 })
