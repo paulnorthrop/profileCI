@@ -48,6 +48,7 @@
 #' @details The default, `epsilon = -1`, should work well enough in most
 #'   circumstances, but to achieve a specific accuracy set `epsilon` to be
 #'   a small positive value, for example, `epsilon = 1e-4`.
+#' @seealso [`plot.profileCI`] and [`print.profileCI`].
 #' @examples
 #' ## From example(glm)
 #' counts <- c(18,17,15,20,10,20,25,13,12)

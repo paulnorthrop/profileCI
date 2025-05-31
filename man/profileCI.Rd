@@ -100,3 +100,6 @@ plot(x, parm = "outcome2")
 x <- profileCI(glm.D93, loglik = poisson_loglik, mult = 32, faster = TRUE)
 x
 }
+\seealso{
+\code{\link{plot.profileCI}} and \code{\link{print.profileCI}}.
+}
