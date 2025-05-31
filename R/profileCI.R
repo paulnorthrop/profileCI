@@ -95,7 +95,7 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
   # If it does then use it, otherwise throw an error
   if (missing(loglik)) {
     find_logLikFn <- function(x) {
-      return(!is.null(getS3method("logLikFn", x, optional = TRUE)))
+      return(!is.null(utils::getS3method("logLikFn", x, optional = TRUE)))
     }
     has_logLikFnMethod <- sapply(class(object), FUN = find_logLikFn)
     if (any(has_logLikFnMethod)) {
