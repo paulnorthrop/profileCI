@@ -72,11 +72,6 @@ pass to \verb{[stats::optim]}.}
 Calculates confidence intervals for one or more parameters for a fitted
 model object. A function that returns the log-likelihood must also be
 supplied.
-Also check \code{chandwich::adjust_loglik} for \code{alg_deriv} and \code{alg_hess}.
-Allow \code{loglik} as an attribute to object.
-If only \code{loglik} provided then find MLEs etc
-Use lower and upper, if present, to contrain symmetric intervals
-Optional function to calculate initial estimates, conditional on 1 parameter
 }
 \details{
 The default, \code{epsilon = -1}, should work well enough in most

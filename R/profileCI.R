@@ -3,11 +3,6 @@
 #' Calculates confidence intervals for one or more parameters for a fitted
 #' model object. A function that returns the log-likelihood must also be
 #' supplied.
-#' Also check `chandwich::adjust_loglik` for `alg_deriv` and `alg_hess`.
-#' Allow `loglik` as an attribute to object.
-#' If only `loglik` provided then find MLEs etc
-#' Use lower and upper, if present, to contrain symmetric intervals
-#' Optional function to calculate initial estimates, conditional on 1 parameter
 #'
 #' @param object A fitted model object. This object must have a `coef` S3
 #'   method. If `faster = TRUE` then it must also have a `vcov` S3 method.
