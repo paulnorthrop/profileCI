@@ -81,7 +81,7 @@ The row names are the names of the parameters supplied in \code{parm}.
 
 If \code{profile = TRUE} then the returned object has extra attributes \code{crit},
 \code{level} and \code{for_plot}. The latter is a named list of length equal to the
-number of parameters. Each component is a 2-column numeri matrix. The
+number of parameters. Each component is a 2-column numeric matrix. The
 first column contains values of the parameter and the second column the
 corresponding values of the profile log-likelihood. The profile
 log-likelihood is equal to the attribute \code{crit} at the limits of the

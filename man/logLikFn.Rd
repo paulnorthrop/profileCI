@@ -17,7 +17,7 @@ logLikFn(object, pars, ...)
 \item{...}{Further arguments.}
 }
 \value{
-A numberic scalar. The value of the log-likelihood function for the
+A numeric scalar. The value of the log-likelihood function for the
 fitted model object \code{object} for parameter values \code{pars}.
 }
 \description{

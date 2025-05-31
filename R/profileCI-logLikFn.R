@@ -9,7 +9,7 @@
 #' @details This generic function has been created to enable a function that
 #'   calculates the log-likelihood for a parametric model at a given set of
 #'   parameter values in `pars` to be available to the function [`profileCI`].
-#' @return A numberic scalar. The value of the log-likelihood function for the
+#' @return A numeric scalar. The value of the log-likelihood function for the
 #'   fitted model object `object` for parameter values `pars`.
 #' @name logLikFn
 NULL
