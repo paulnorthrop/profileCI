@@ -78,6 +78,7 @@ matrix with 2 columns giving the lower and upper confidence limits for
 each parameter. These columns are labelled as \code{(1-level)/2} and
 \code{1-(1-level)/2}, expressed as a percentage, by default \verb{2.5\%} and \verb{97.5\%}.
 The row names are the names of the parameters supplied in \code{parm}.
+
 If \code{profile = TRUE} then the returned object has extra attributes \code{crit},
 \code{level} and \code{for_plot}. The latter is a named list of length equal to the
 number of parameters. Each component is a 2-column numeri matrix. The

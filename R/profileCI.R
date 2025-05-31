@@ -58,6 +58,7 @@
 #'   each parameter. These columns are labelled as `(1-level)/2` and
 #'   `1-(1-level)/2`, expressed as a percentage, by default `2.5%` and `97.5%`.
 #'   The row names are the names of the parameters supplied in `parm`.
+#'
 #'   If `profile = TRUE` then the returned object has extra attributes `crit`,
 #'   `level` and `for_plot`. The latter is a named list of length equal to the
 #'   number of parameters. Each component is a 2-column numeri matrix. The
