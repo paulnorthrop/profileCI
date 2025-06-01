@@ -551,6 +551,8 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
               lower_pars = lower_pars, upper_pars = upper_pars))
 }
 
+# ========================= Lagrangian interpolation ======================== #
+
 #' @keywords internal
 #' @rdname profileCI-internal
 lagrangianInterpolation <- function(x0, y0) {
@@ -561,6 +563,8 @@ lagrangianInterpolation <- function(x0, y0) {
   }
   return(Vectorize(f, "x"))
 }
+
+# ======================== Initial estimates from vcov ====================== #
 
 #' @keywords internal
 #' @rdname profileCI-internal
