@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2025-06-01T00:04Z
+last_built: 2025-06-01T13:49Z
 urls:
   reference: https://github.com/paulnorthrop/profileCI/reference
   article: https://github.com/paulnorthrop/profileCI/articles

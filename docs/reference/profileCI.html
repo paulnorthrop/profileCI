@@ -194,12 +194,23 @@ reducing <code>mult</code>, perhaps to <code>8</code> or <code>16</code> should 
 <span class="r-out co"><span class="r-pr">#&gt;</span> treatment2  -0.3919928  0.39199279</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> treatment3  -0.3919928  0.39199279</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># A logLikFn.glm S3 method is provided in profileCI so we do not need to</span></span></span>
+<span class="r-in"><span><span class="co"># supply loglik explicitly</span></span></span>
+<span class="r-in"><span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu">profileCI</span><span class="op">(</span><span class="va">glm.D93</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">prof</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   2.5%       97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  2.6958271  3.36656670</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> outcome2    -0.8576884 -0.06255488</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> outcome3    -0.6753594  0.08244084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> treatment2  -0.3932489  0.39324886</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> treatment3  -0.3932489  0.39324886</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Supplying a Poisson GLM log-likelihood explicitly</span></span></span>
 <span class="r-in"><span><span class="va">poisson_loglik</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pars</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="va">glm.D93</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">pars</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">loglik</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">dpois</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">glm.D93</span><span class="op">$</span><span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambda</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">loglik</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># This will be a bit slower than profile.glm() because glm.fit() is fast</span></span></span>
 <span class="r-in"><span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu">profileCI</span><span class="op">(</span><span class="va">glm.D93</span>, loglik <span class="op">=</span> <span class="va">poisson_loglik</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">prof</span></span></span>
@@ -214,9 +225,13 @@ reducing <code>mult</code>, perhaps to <code>8</code> or <code>16</code> should 
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">prof</span>, parm <span class="op">=</span> <span class="st">"outcome2"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="profileCI-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A logLikFn.glm S3 method is provided in profileCI so we do not need to</span></span></span>
-<span class="r-in"><span><span class="co"># supply loglik explicitly</span></span></span>
-<span class="r-in"><span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu">profileCI</span><span class="op">(</span><span class="va">glm.D93</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Supplying a more general Poisson GLM log-likelihood</span></span></span>
+<span class="r-in"><span><span class="va">poisson_loglik_2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pars</span>, <span class="va">glm_object</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="va">glm_object</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">pars</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">loglik</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">dpois</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">glm_object</span><span class="op">$</span><span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambda</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">loglik</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu">profileCI</span><span class="op">(</span><span class="va">glm.D93</span>, loglik <span class="op">=</span> <span class="va">poisson_loglik_2</span>, glm_object <span class="op">=</span> <span class="va">glm.D93</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">prof</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   2.5%       97.5%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  2.6958271  3.36656670</span>
