@@ -16,7 +16,7 @@ Status](https://codecov.io/github/paulnorthrop/profileCI/coverage.svg?branch=mas
 
 This package computes confidence intervals based on profile
 log-likelihood for one or more parameters in a user-supplied fitted
-multiparameter model. The functionality of the main function,
+multi-parameter model. The functionality of the main function,
 `profileCI()`, is like that of `confint.glm`, which calculates
 confidence intervals for the parameters of a Generalised Linear Model
 (GLM).
