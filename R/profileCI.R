@@ -106,11 +106,6 @@
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
                       profile = TRUE, mult = 32, faster = TRUE, epsilon = -1,
                       optim_args = list()) {
-  # Check that the model has at least 2 parameters
-  cf <- coef(object)
-  if (length(cf) < 2) {
-    stop("The model must have more than one parameter.")
-  }
   # If loglik is missing then check whether object has a logLikFn method
   # If it does then use it, otherwise throw an error
   if (missing(loglik)) {
@@ -127,6 +122,7 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     }
   }
   # Check and set parm
+  cf <- coef(object)
   if (is.null(names(cf))) {
     names(cf) <- paste0("par", 1:length(cf))
   }
