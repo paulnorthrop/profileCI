@@ -45,3 +45,13 @@ my_prof_slow <- profileCI(glm.D93, loglik = poisson_loglik, parm = 2,
 test_that("Profile-based intervals for Poisson GLM, faster = TRUE, epsilon > 0", {
   expect_equal(my_prof_fast, my_prof_slow, tolerance = 1e-3, ignore_attr = TRUE)
 })
+
+# 5. Tests for an intercept only Poisson GLM
+
+conf0 <- confint(glm.0, parm = 1)
+prof0 <- profileCI(glm.0, loglik = poisson_loglik_0, profile = TRUE,
+                   mult = 32, faster = TRUE)
+test_that("Profile-based intervals for intercept only Poisson GLM", {
+  expect_equal(conf0, prof0, tolerance = 1e-5, ignore_attr = TRUE)
+})
+
