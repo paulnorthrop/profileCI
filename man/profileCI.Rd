@@ -127,8 +127,8 @@ poisson_loglik <- function(pars) {
 # This will be a bit slower than profile.glm() because glm.fit() is fast
 prof <- profileCI(glm.D93, loglik = poisson_loglik)
 prof
-plot(x, parm = 1)
-plot(x, parm = "outcome2")
+plot(prof, parm = 1)
+plot(prof, parm = "outcome2")
 
 # A logLikFn.glm S3 method is provided in profileCI so we do not need to
 # supply loglik explicitly
