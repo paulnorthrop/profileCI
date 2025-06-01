@@ -118,21 +118,30 @@ glm.D93 <- glm(counts ~ outcome + treatment, family = poisson())
 confint(glm.D93)
 confint.default(glm.D93)
 
+# A logLikFn.glm S3 method is provided in profileCI so we do not need to
+# supply loglik explicitly
+prof <- profileCI(glm.D93)
+prof
+
+# Supplying a Poisson GLM log-likelihood explicitly
 poisson_loglik <- function(pars) {
   lambda <- exp(model.matrix(glm.D93) \%*\% pars)
   loglik <- stats::dpois(x = glm.D93$y, lambda = lambda, log = TRUE)
   return(sum(loglik))
 }
-
 # This will be a bit slower than profile.glm() because glm.fit() is fast
 prof <- profileCI(glm.D93, loglik = poisson_loglik)
 prof
 plot(prof, parm = 1)
 plot(prof, parm = "outcome2")
 
-# A logLikFn.glm S3 method is provided in profileCI so we do not need to
-# supply loglik explicitly
-prof <- profileCI(glm.D93)
+# Supplying a more general Poisson GLM log-likelihood
+poisson_loglik_2 <- function(pars, glm_object) {
+  lambda <- exp(model.matrix(glm_object) \%*\% pars)
+  loglik <- stats::dpois(x = glm_object$y, lambda = lambda, log = TRUE)
+  return(sum(loglik))
+}
+prof <- profileCI(glm.D93, loglik = poisson_loglik_2, glm_object = glm.D93)
 prof
 }
 \seealso{
