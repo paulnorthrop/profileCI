@@ -1,4 +1,4 @@
-#' profileCI: Profiling a Log-Likelihood to Calculate a Confidence Interval
+#' profileCI: Profiling a Log-likelihood to Calculate Confidence Intervals
 #'
 #' Provides tools for profiling a user-supplied log-likelihood function to
 #' calculate confidence intervals for model parameters. Speed of computation

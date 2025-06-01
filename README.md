@@ -12,7 +12,7 @@ Status](https://codecov.io/github/paulnorthrop/profileCI/coverage.svg?branch=mas
 [![Downloads
 (total)](https://cranlogs.r-pkg.org/badges/grand-total/profileCI?color=brightgreen)](https://cran.r-project.org/package=profileCI)
 
-## Profiling a log-likelihood to calculate a confidence interval
+## Profiling a Log-likelihood to Calculate Confidence Intervals
 
 This package computes confidence intervals based on profile
 log-likelihood for one or more parameters in a user-supplied fitted
