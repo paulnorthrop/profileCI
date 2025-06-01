@@ -75,7 +75,8 @@
 #'   If `faster = FALSE` or `epsilon > 0` then the attributes `lower_pars` and
 #'   `upper_pars` are lists that provide, for each profiling, the values of the
 #'   parameters for the last maximisation of the log-likelihood.
-#' @return A matrix with columns giving the  object `c("profileCI", "matrix", "array")``
+#' @return A matrix with columns giving the  object
+#'   `c("profileCI", "matrix", "array")`.
 #' @seealso [`plot.profileCI`] and [`print.profileCI`].
 #' @examples
 #' ## From example(glm)

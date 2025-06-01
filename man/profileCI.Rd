@@ -90,7 +90,8 @@ If \code{faster = FALSE} or \code{epsilon > 0} then the attributes \code{lower_p
 \code{upper_pars} are lists that provide, for each profiling, the values of the
 parameters for the last maximisation of the log-likelihood.
 
-A matrix with columns giving the  object `c("profileCI", "matrix", "array")``
+A matrix with columns giving the  object
+\code{c("profileCI", "matrix", "array")}.
 }
 \description{
 Calculates confidence intervals for one or more parameters in a fitted
