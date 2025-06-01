@@ -297,12 +297,18 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
   my_val <- -opt$value
   x2[ii] <- par_which
   v2[ii] <- my_val
+
+  # If my_val < conf_line then the profile log-likelihood has dropped below
+  # the required level in one (big) step. We use linear interpolation between
+  # this point and the MLE to move back (hopefully, just) above the level.
+  # This should work because the profile log-likelihood should be convex.
   if (my_val < conf_line) {
     searched_upwards <- FALSE
     while_condition <- function(my_val) {
       return(my_val < conf_line)
     }
-    delta <- -inc
+    temp <- lagrangianInterpolation(c(v2[1], v2[2]), c(x2[1], x2[2]))
+    delta <- -(x2[2] - temp(conf_line))
   } else {
     searched_upwards <- TRUE
     while_condition <- function(my_val) {
@@ -367,12 +373,18 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
   my_val <- -opt$value
   x1[ii] <- par_which
   v1[ii] <- my_val
+
+  # If my_val < conf_line then the profile log-likelihood has dropped below
+  # the required level in one (big) step. We use linear interpolation between
+  # this point and the MLE to move back (hopefully, just) above the level.
+  # This should work because the profile log-likelihood should be convex.
   if (my_val < conf_line) {
     searched_downwards <- FALSE
     while_condition <- function(my_val) {
       return(my_val < conf_line)
     }
-    delta <- -inc
+    temp <- lagrangianInterpolation(c(v1[1], v1[2]), c(x1[1], x1[2]))
+    delta <- -(temp(conf_line) - x1[2])
   } else {
     searched_downwards <- TRUE
     while_condition <- function(my_val) {
