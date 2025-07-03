@@ -30,6 +30,7 @@ faster_profile_ci(
   ci_sym_mat,
   inc,
   epsilon,
+  optim_args,
   ...
 )
 
