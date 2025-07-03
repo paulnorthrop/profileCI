@@ -70,7 +70,10 @@ faster still.
 }}
 
 \item{optim_args}{A list of further arguments (other than \code{par} and \code{fn}) to
-pass to \code{\link[stats:optim]{stats::optim}}.}
+pass to \code{\link[stats:optim]{stats::optim}}. For example,
+\code{optim_args = list(method = "BFGS", control = list(trace = 1))}
+changes the method used from \code{"Nelder-Mead"} to \code{"BFGS"} and sets \code{trace}
+to provide the lowest level of tracing information.}
 }
 \value{
 An object of class \code{c("profileCI", "matrix", "array")}. A numeric

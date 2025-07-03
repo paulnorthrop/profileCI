@@ -49,7 +49,10 @@
 #'   * If `epsilon[i] = 0` then linear interpolation is used, which will be
 #'     faster still.
 #' @param optim_args A list of further arguments (other than `par` and `fn`) to
-#'   pass to [`stats::optim`].
+#'   pass to [`stats::optim`]. For example,
+#'   `optim_args = list(method = "BFGS", control = list(trace = 1))`
+#'   changes the method used from `"Nelder-Mead"` to `"BFGS"` and sets `trace`
+#'   to provide the lowest level of tracing information.
 #' @details The default, `epsilon = -1`, should work well enough in most
 #'   circumstances, but to achieve a specific accuracy set `epsilon` to be
 #'   a small positive value, for example, `epsilon = 1e-4`.
