@@ -13,22 +13,29 @@ NULL
 #' @rdname profileCI-internal
 profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
                        epsilon, optim_args, ...) {
+  # To avoid potential issues with passing arguments to the negated
+  # log-likelihood function via ... we save these arguments in loglik_args now
+  # and use them inside profiling_fn()
+  loglik_args <- list(...)
 
   # The number of parameters
   n_pars <- length(mle)
 
   # The -log-likelihood to profile over parameters in par other than par[which]
-  profiling_fn <- function(par, par_which, ...) {
+  profiling_fn <- function(par, par_which) {
     # Place par_which in position which and the other parameters around it
     parameters <- rep_len(NA, length(par) + 1)
     parameters[which] <- par_which
     parameters[-which] <- par
     # Return the negated log-likelihood
-    return(negated_loglik_fn(parameters, ...))
+    negated_loglik_fn_args <- c(list(parm = parameters), loglik_args)
+    val <- do.call(negated_loglik_fn, negated_loglik_fn_args)
+    return(val)
   }
 
   # The maximised log-likelihood and the MLE for the parameter of interest
-  max_loglik <- -negated_loglik_fn(mle, ...)
+  mle_args <- c(list(parm = mle), loglik_args)
+  max_loglik <- -do.call(negated_loglik_fn, mle_args)
   mle_which <- mle[which]
   # The horizontal line that determines the confidence limits
   conf_line <- max_loglik - 0.5 * stats::qchisq(level, 1)
@@ -174,12 +181,12 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     # If epsilon > 0 then use itp::itp(), creating a new bracket from 2 of the
     # 3 points available and set an initial estimate
     if (epsilon > 0) {
-      itp_function <- function(x, par, ...) {
-        o_args <- list(par = par, fn = profiling_fn, par_which = x)
+      itp_function <- function(val_par_which, par) {
+        o_args <- list(par = par, fn = profiling_fn, par_which = val_par_which)
         opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
         if (inherits(opt, "try-error")) {
-          init <- initial_mvn(object = object, x = which, x_value = x)
-          o_args <- list(par = init, fn = profiling_fn, par_which = x)
+          init <- initial_mvn(object = object, x = which, x_value = val_par_which)
+          o_args <- list(par = init, fn = profiling_fn, par_which = val_par_which)
           opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
         }
         val <- -opt$value - conf_line
@@ -195,7 +202,7 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
       upper <- itp::itp(f = itp_function, interval = interval,
                         par = sol_upper,
                         f.a = y1up - conf_line, f.b = y2up - conf_line,
-                        epsilon = epsilon, ...)
+                        epsilon = epsilon)
       up_lim <- upper$root
       # Find the lower limit of the confidence interval
       if (low_new > 0) {
@@ -206,7 +213,7 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
       lower <- itp::itp(f = itp_function, interval = interval,
                         par = sol_lower,
                         f.a = y1low - conf_line, f.b = y2low - conf_line,
-                        epsilon = epsilon, ...)
+                        epsilon = epsilon)
       low_lim <- lower$root
       # Add the approximate solutions to par_values and prof_lik
       # Note that only the extreme ends of these vectors have prof_lik values
@@ -244,22 +251,29 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
 faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
                               level, mle, ci_sym_mat, inc, epsilon, optim_args,
                               ...) {
+  # To avoid potential issues with passing arguments to the negated
+  # log-likelihood function via ... we save these arguments in loglik_args now
+  # and use them inside profiling_fn()
+  loglik_args <- list(...)
 
   # The number of parameters
   n_pars <- length(mle)
 
   # The -log-likelihood to profile over parameters in par other than par[which]
-  profiling_fn <- function(par, par_which, ...) {
+  profiling_fn <- function(par, par_which) {
     # Place par_which in position which and the other parameters around it
     parameters <- rep_len(NA, length(par) + 1)
     parameters[which] <- par_which
     parameters[-which] <- par
     # Return the negated log-likelihood
-    return(negated_loglik_fn(parameters, ...))
+    negated_loglik_fn_args <- c(list(parm = parameters), loglik_args)
+    val <- do.call(negated_loglik_fn, negated_loglik_fn_args)
+    return(val)
   }
 
   # The maximised log-likelihood and the MLE for the parameter of interest
-  max_loglik <- -negated_loglik_fn(mle, ...)
+  mle_args <- c(list(parm = mle), loglik_args)
+  max_loglik <- -do.call(negated_loglik_fn, mle_args)
   mle_which <- mle[which]
   # The horizontal line that determines the confidence limits
   conf_line <- max_loglik - 0.5 * stats::qchisq(level, 1)
@@ -501,8 +515,8 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
     # If epsilon > 0 then use itp::itp(), creating a new bracket from 2 of the
     # 3 points available and set an initial estimate
     if (epsilon > 0) {
-      itp_function <- function(x, par, ...) {
-        o_args <- list(par = par, fn = profiling_fn, par_which = x)
+      itp_function <- function(val_par_which, par) {
+        o_args <- list(par = par, fn = profiling_fn, par_which = val_par_which)
         opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
         if (inherits(opt, "try-error")) {
           init <- initial_mvn(object = object, x = which, x_value = x)
@@ -522,7 +536,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
       upper <- itp::itp(f = itp_function, interval = interval,
                         par = sol_upper,
                         f.a = y1up - conf_line, f.b = y2up - conf_line,
-                        epsilon = epsilon, ...)
+                        epsilon = epsilon)
       up_lim <- upper$root
       # Find the lower limit of the confidence interval
       if (low_new > 0) {
@@ -533,7 +547,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
       lower <- itp::itp(f = itp_function, interval = interval,
                         par = sol_lower,
                         f.a = y1low - conf_line, f.b = y2low - conf_line,
-                        epsilon = epsilon, ...)
+                        epsilon = epsilon)
       low_lim <- lower$root
       # Add the approximate solutions to par_values and prof_lik
       # Note that only the extreme ends of these vectors have prof_lik values
