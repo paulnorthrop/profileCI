@@ -49,7 +49,7 @@
 #'   * If `epsilon[i] = 0` then linear interpolation is used, which will be
 #'     faster still.
 #' @param optim_args A list of further arguments (other than `par` and `fn`) to
-#'   pass to `[stats::optim]`.
+#'   pass to [`stats::optim`].
 #' @details The default, `epsilon = -1`, should work well enough in most
 #'   circumstances, but to achieve a specific accuracy set `epsilon` to be
 #'   a small positive value, for example, `epsilon = 1e-4`.

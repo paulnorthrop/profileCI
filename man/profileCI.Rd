@@ -70,7 +70,7 @@ faster still.
 }}
 
 \item{optim_args}{A list of further arguments (other than \code{par} and \code{fn}) to
-pass to \verb{[stats::optim]}.}
+pass to \code{\link[stats:optim]{stats::optim}}.}
 }
 \value{
 An object of class \code{c("profileCI", "matrix", "array")}. A numeric
