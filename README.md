@@ -87,9 +87,9 @@ library(profileCI)
 prof <- profileCI(glm.D93, loglik = poisson_loglik)
 prof
 #>                   2.5%       97.5%
-#> (Intercept)  2.6958271  3.36656670
-#> outcome2    -0.8576884 -0.06255488
-#> outcome3    -0.6753594  0.08244084
+#> (Intercept)  2.6958271  3.36656379
+#> outcome2    -0.8576884 -0.06255514
+#> outcome3    -0.6753594  0.08244109
 #> treatment2  -0.3932489  0.39324886
 #> treatment3  -0.3932489  0.39324886
 ```
@@ -129,4 +129,10 @@ To get the current released version from CRAN:
 
 ``` r
 install.packages("profileCI")
+```
+
+To install the development version from GitHub:
+
+``` r
+remotes::install_github("paulnorthrop/profileCI")
 ```
