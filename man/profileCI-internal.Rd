@@ -8,7 +8,17 @@
 \alias{initial_mvn}
 \title{Internal profileCI functions}
 \usage{
-profile_ci(object, negated_loglik_fn, which = 1, level, mle, inc, epsilon, ...)
+profile_ci(
+  object,
+  negated_loglik_fn,
+  which = 1,
+  level,
+  mle,
+  inc,
+  epsilon,
+  optim_args,
+  ...
+)
 
 faster_profile_ci(
   object,

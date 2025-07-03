@@ -239,7 +239,8 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
                                 negated_loglik_fn = negated_loglik_fn,
                                 which = parm_numbers[i], level = level,
                                 mle = coef(object), inc = inc[i],
-                                epsilon = epsilon[i], ...)
+                                epsilon = epsilon[i], optim_args = optim_args,
+                                ...)
         if (!is.null(conf_list$optim_error)) {
           mult <- mult / 2
         } else {

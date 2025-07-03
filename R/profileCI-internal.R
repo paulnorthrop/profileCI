@@ -12,7 +12,7 @@ NULL
 #' @keywords internal
 #' @rdname profileCI-internal
 profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
-                       epsilon, ...) {
+                       epsilon, optim_args, ...) {
 
   # The number of parameters
   n_pars <- length(mle)
@@ -49,13 +49,13 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
   sol <- mle[-which]
   while (my_val > conf_line){
     par_which <- par_which + inc
-    opt <- try(stats::optim(sol, profiling_fn, par_which = par_which, ...),
-               silent = TRUE)
+    o_args <- list(par = sol, fn = profiling_fn, par_which = par_which)
+    opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
     # If optim errors then set different initial values and try again
     if (inherits(opt, "try-error")) {
       init <- initial_mvn(object = object, x = which, x_value = par_which)
-      opt <- try(stats::optim(init, profiling_fn, par_which = par_which, ...),
-                 silent = TRUE)
+      o_args <- list(par = init, fn = profiling_fn, par_which = par_which)
+      opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
     }
     if (inherits(opt, "try-error")) {
       return(list(optim_error = attr(opt, "condition")))
@@ -84,13 +84,13 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
   sol <- mle[-which]
   while (my_val > conf_line){
     par_which <- par_which - inc
-    opt <- try(stats::optim(sol, profiling_fn, par_which = par_which, ...),
-               silent = TRUE)
+    o_args <- list(par = sol, fn = profiling_fn, par_which = par_which)
+    opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
     # If optim errors then set different initial values and try again
     if (inherits(opt, "try-error")) {
       init <- initial_mvn(object = object, x = which, x_value = par_which)
-      opt <- try(stats::optim(init, profiling_fn, par_which = par_which, ...),
-                 silent = TRUE)
+      o_args <- list(par = init, fn = profiling_fn, par_which = par_which)
+      opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
     }
     if (inherits(opt, "try-error")) {
       return(list(optim_error = attr(opt, "condition")))
@@ -142,13 +142,13 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     # the confidence limits by quadratic interpolation
 
     # Upper
-    opt <- try(stats::optim(sol_upper, profiling_fn,
-                            par_which = up_lim, ...), silent = TRUE)
+    o_args <- list(par = sol_upper, fn = profiling_fn, par_which = up_lim)
+    opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
     # If optim errors then set different initial values and try again
     if (inherits(opt, "try-error")) {
       init <- initial_mvn(object = object, x = which, x_value = up_lim)
-      opt <- try(stats::optim(init, profiling_fn, par_which = up_lim, ...),
-                 silent = TRUE)
+      o_args <- list(par = init, fn = profiling_fn, par_which = up_lim)
+      opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
     }
     up_new <- -opt$value
     temp <- lagrangianInterpolation(c(y1up, up_new, y2up),
@@ -157,13 +157,13 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     up_lim <- temp(conf_line)
 
     # Lower
-    opt <- try(stats::optim(sol_lower, profiling_fn,
-                            par_which = low_lim, ...), silent = TRUE)
+    o_args <- list(par = sol_lower, fn = profiling_fn, par_which = low_lim)
+    opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
     # If optim errors then set different initial values and try again
     if (inherits(opt, "try-error")) {
       init <- initial_mvn(object = object, x = which, x_value = low_lim)
-      opt <- try(stats::optim(init, profiling_fn, par_which = low_lim, ...),
-                 silent = TRUE)
+      o_args <- list(par = init, fn = profiling_fn, par_which = low_lim)
+      opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
     }
     low_new <- -opt$value
     temp <- lagrangianInterpolation(c(y1low, low_new, y2low),
@@ -175,12 +175,12 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     # 3 points available and set an initial estimate
     if (epsilon > 0) {
       itp_function <- function(x, par, ...) {
-        opt <- try(stats::optim(par = par, fn = profiling_fn, par_which = x,
-                                ...), silent = TRUE)
+        o_args <- list(par = par, fn = profiling_fn, par_which = x)
+        opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
         if (inherits(opt, "try-error")) {
           init <- initial_mvn(object = object, x = which, x_value = x)
-          opt <- try(stats::optim(par = init, fn = profiling_fn, par_which = x,
-                                  ...), silent = TRUE)
+          o_args <- list(par = init, fn = profiling_fn, par_which = x)
+          opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
         }
         val <- -opt$value - conf_line
         attr(val, "parameters") <- opt$par
