@@ -80,9 +80,11 @@ plot.profileCI <- function(x, parm = 1:nrow(x), add = TRUE, digits = 2, ...) {
   my_xlab <- parm_names[parm]
   limits <- x[parm, ]
   crit <- attr(x, "crit")
+  my_ylim <- range(c(crit, to_plot[, "prof_loglik"]))
   plot_fn <- function(x, ..., xlab = my_xlab, ylab = "profile log-likelihood",
-                      lwd = 2, type = "l") {
-    graphics::plot(x, ..., xlab = xlab, ylab = ylab, lwd = lwd, type = type)
+                      lwd = 2, type = "l", ylim = my_ylim) {
+    graphics::plot(x, ..., xlab = xlab, ylab = ylab, lwd = lwd, type = type,
+                   ylim = ylim)
   }
   plot_fn(to_plot, ...)
   if (add) {
