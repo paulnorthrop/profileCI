@@ -79,7 +79,7 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     # Check for flatness
     # Use one_se_away to avoid stopping near the MLE
     one_se_away <- abs(par_which - mle_which) > one_se
-    delta_loglik <- mult * (my_val + opt$value) / 100
+    delta_loglik <- 100 * (my_val + opt$value) / mult
     if (one_se_away && delta_loglik > 0 && delta_loglik < flat) {
       flat_upper <- TRUE
     }
@@ -428,7 +428,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
     # Check for flatness
     # Use three_se_away to avoid stopping near the MLE
     three_se_away <- abs(par_which - mle_which) > 3 * one_se
-    delta_loglik <- mult * (my_val + opt$value) / 100
+    delta_loglik <- 100 * (my_val + opt$value) / mult
     if (three_se_away && delta_loglik > 0 && delta_loglik < flat) {
       flat_upper <- TRUE
     }
@@ -522,7 +522,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
     # Check for flatness
     # Use three_se_away to avoid stopping near the MLE
     three_se_away <- abs(par_which - mle_which) > 3 * one_se
-    delta_loglik <- mult * (my_val + opt$value) / 100
+    delta_loglik <- 100 * (my_val + opt$value) / mult
     if (three_se_away && delta_loglik > 0 && delta_loglik < flat) {
       flat_lower <- TRUE
     }
