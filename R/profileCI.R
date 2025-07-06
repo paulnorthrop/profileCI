@@ -101,8 +101,8 @@
 #' confint(glm.D93)
 #' confint.default(glm.D93)
 #'
-#' # A logLikFn.glm S3 method is provided in profileCI so we do not need to
-#' # supply loglik explicitly
+#' # A Poisson log-linear GLM logLikFn.glm S3 method is provided in profileCI
+#' # so we do not need to supply loglik explicitly
 #' prof <- profileCI(glm.D93)
 #' prof
 #'

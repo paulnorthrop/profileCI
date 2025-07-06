@@ -11,6 +11,9 @@
 #'   parameter values in `pars` to be available to the function [`profileCI`].
 #' @return A numeric scalar. The value of the log-likelihood function for the
 #'   fitted model object `object` for parameter values `pars`.
+#'
+#'   The `logLikFn.glm` generic is specifically for the Poisson log-linear GLM
+#'   case.
 #' @name logLikFn
 NULL
 

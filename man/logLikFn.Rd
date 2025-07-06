@@ -19,6 +19,9 @@ logLikFn(object, pars, ...)
 \value{
 A numeric scalar. The value of the log-likelihood function for the
 fitted model object \code{object} for parameter values \code{pars}.
+
+The \code{logLikFn.glm} generic is specifically for the Poisson log-linear GLM
+case.
 }
 \description{
 This is a generic function for calculating a log-likelihood for an object
