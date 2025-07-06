@@ -26,8 +26,10 @@ confidence intervals for the parameters of a Generalised Linear Model
 Speed of computation can be improved by starting the profiling from
 limits based on large sample normal theory. The accuracy of the limits
 can be set by the user. A plot method visualises the log-likelihood and
-confidence interval. Only convex log-likelihoods are supported, that is,
-disjoint confidence intervals will not be found.
+confidence interval. Cases where the profile log-likelihood flattens
+above the value at which a confidence limit is defined can be handled,
+leading to a limit at plus or minus infinity. Disjoint confidence
+intervals will not be found.
 
 ## An example
 
