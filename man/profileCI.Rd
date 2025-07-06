@@ -14,6 +14,7 @@ profileCI(
   mult = 32,
   faster = TRUE,
   epsilon = -1,
+  flat = 1e-06,
   optim_args = list()
 )
 }
@@ -68,6 +69,12 @@ be faster.
 \item If \code{epsilon[i] = 0} then linear interpolation is used, which will be
 faster still.
 }}
+
+\item{flat}{A positive numeric scalar used to avoid continuing a search
+for a confidence limits in cases where the profile log-likelihood becomes
+flat. If a reduction in profile log-likelihood is less than
+\code{flat * mult / 100} then the search is stopped. The value of the returned
+confidence limit is \code{Inf} for an upper limit and \code{-Inf} for a lower limit.}
 
 \item{optim_args}{A list of further arguments (other than \code{par} and \code{fn}) to
 pass to \code{\link[stats:optim]{stats::optim}}. For example,

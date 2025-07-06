@@ -48,6 +48,11 @@
 #'
 #'   * If `epsilon[i] = 0` then linear interpolation is used, which will be
 #'     faster still.
+#' @param flat A positive numeric scalar used to avoid continuing a search
+#'   for a confidence limits in cases where the profile log-likelihood becomes
+#'   flat. If a reduction in profile log-likelihood is less than
+#'   `flat * mult / 100` then the search is stopped. The value of the returned
+#'   confidence limit is `Inf` for an upper limit and `-Inf` for a lower limit.
 #' @param optim_args A list of further arguments (other than `par` and `fn`) to
 #'   pass to [`stats::optim`]. For example,
 #'   `optim_args = list(method = "BFGS", control = list(trace = 1))`
@@ -118,7 +123,9 @@
 #' @export
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
                       profile = TRUE, mult = 32, faster = TRUE, epsilon = -1,
-                      optim_args = list()) {
+                      flat = 1e-6, optim_args = list()) {
+  # Force flat to be positive
+  flat <- abs(flat)
   # If loglik is missing then check whether object has a logLikFn method
   # If it does then use it, otherwise throw an error
   if (missing(loglik)) {
@@ -227,7 +234,8 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
                                        level = level, mle = coef(object),
                                        ci_sym_mat = ci_sym_mat,
                                        inc = inc[i], epsilon = epsilon[i],
-                                       optim_args = optim_args, ...)
+                                       optim_args = optim_args, mult = mult,
+                                       flat = flat, ...)
         if (!is.null(conf_list$optim_error)) {
           mult <- mult / 2
         } else {
@@ -244,7 +252,7 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
                                 which = parm_numbers[i], level = level,
                                 mle = coef(object), inc = inc[i],
                                 epsilon = epsilon[i], optim_args = optim_args,
-                                ...)
+                                mult = mult, flat = flat, ...)
         if (!is.null(conf_list$optim_error)) {
           mult <- mult / 2
         } else {

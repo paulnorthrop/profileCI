@@ -17,6 +17,8 @@ profile_ci(
   inc,
   epsilon,
   optim_args,
+  mult,
+  flat,
   ...
 )
 
@@ -31,6 +33,8 @@ faster_profile_ci(
   inc,
   epsilon,
   optim_args,
+  mult,
+  flat,
   ...
 )
 
