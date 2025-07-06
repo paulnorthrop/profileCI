@@ -58,6 +58,7 @@ generic.</p>
 <span>  mult <span class="op">=</span> <span class="fl">32</span>,</span>
 <span>  faster <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  epsilon <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
+<span>  flat <span class="op">=</span> <span class="fl">1e-06</span>,</span>
 <span>  optim_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -130,6 +131,14 @@ be faster.</p></li>
 <li><p>If <code>epsilon[i] = 0</code> then linear interpolation is used, which will be
 faster still.</p></li>
 </ul></dd>
+
+
+<dt id="arg-flat">flat<a class="anchor" aria-label="anchor" href="#arg-flat"></a></dt>
+<dd><p>A positive numeric scalar used to avoid continuing a search
+for a confidence limits in cases where the profile log-likelihood becomes
+flat. If a reduction in profile log-likelihood is less than
+<code>flat * mult / 100</code> then the search is stopped. The value of the returned
+confidence limit is <code>Inf</code> for an upper limit and <code>-Inf</code> for a lower limit.</p></dd>
 
 
 <dt id="arg-optim-args">optim_args<a class="anchor" aria-label="anchor" href="#arg-optim-args"></a></dt>
@@ -238,12 +247,12 @@ reducing <code>mult</code>, perhaps to <code>8</code> or <code>16</code> should 
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu">profileCI</span><span class="op">(</span><span class="va">glm.D93</span>, loglik <span class="op">=</span> <span class="va">poisson_loglik_2</span>, glm_object <span class="op">=</span> <span class="va">glm.D93</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">prof</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             2.5% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)   NA    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> outcome2      NA    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> outcome3      NA    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> treatment2    NA    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> treatment3    NA    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   2.5%       97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  2.6958271  3.36656379</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> outcome2    -0.8576884 -0.06255514</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> outcome3    -0.6753594  0.08244109</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> treatment2  -0.3932489  0.39324886</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> treatment3  -0.3932489  0.39324886</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

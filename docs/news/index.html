@@ -37,6 +37,11 @@
 <div class="section level3">
 <h3 id="new-features-1-1-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0"></a></h3>
 <ul><li>The argument <code>optim_args</code> actually works now! Thank you to Jakob Madsen (<a href="https://github.com/paulnorthrop/profileCI/issues/1">#1</a>).</li>
+<li>An argument <code>flat</code> has been added to <code><a href="../reference/profileCI.html">profileCI()</a></code> to deal with cases where one or both of the limits is (minus or plus) infinity because the profile log-likelihood fails to drop below the level that defines the confidence interval.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-and-minor-improvements-1-1-0">Bug fixes and minor improvements<a class="anchor" aria-label="anchor" href="#bug-fixes-and-minor-improvements-1-1-0"></a></h3>
+<ul><li>Arguments to the user-supplied log-likelihood function are extracted explicitly to simplify the code and avoid potential argument matching issues.</li>
 </ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
