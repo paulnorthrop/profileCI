@@ -62,10 +62,12 @@ vc <- matrix(
   nrow = 3, byrow = TRUE,
 )
 
-dummy2 <- "foo"
-class(dummy2) <- "dummy2"
-coef.dummy2 <- function(x) coefs
-vcov.dummy2 <- function(x) vc
+dummy2 <- list()
+dummy2$coefficients <- coefs
+dummy2$vcov <- vc
+class(dummy2) <- "foo"
+coef.foo <- function(x) x$coefficients
+vcov.foo <- function(x) x$vcov
 
 # 70% CI for phi
 p70false <- profileCI(dummy2, loglik = ll_drda, parm = "phi", level = 0.7,
