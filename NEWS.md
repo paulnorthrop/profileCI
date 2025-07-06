@@ -7,5 +7,6 @@
 
 ## Bug fixes and minor improvements
 
+* An explanation of the creation of `coef` and `vcov` methods has been added to the description of `object` in the `profileCI()` documentation.
 * Arguments to the user-supplied log-likelihood function are extracted explicitly to simplify the code and avoid potential argument matching issues.
 
