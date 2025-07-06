@@ -659,9 +659,12 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
         o_args <- list(par = par, fn = profiling_fn, par_which = val_par_which)
         opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
         if (inherits(opt, "try-error")) {
-          init <- initial_mvn(object = object, x = which, x_value = x)
-          o_args <- list(par = init, fn = profiling_fn, par_which = x)
-          opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
+          init <- initial_mvn(object = object, x = which,
+                              x_value = val_par_which)
+          o_args <- list(par = init, fn = profiling_fn,
+                         par_which = val_par_which)
+          opt <- try(do.call(stats::optim, c(o_args, optim_args)),
+                     silent = TRUE)
         }
         val <- -opt$value - conf_line
         attr(val, "parameters") <- opt$par
