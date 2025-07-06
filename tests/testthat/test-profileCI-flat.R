@@ -67,7 +67,7 @@ dummy2$coefficients <- coefs
 dummy2$vcov <- vc
 class(dummy2) <- "foo"
 .S3method("coef", "foo", function(x) x$coefficients)
-.S3method("vcov", "foo", function(x) x$vc)
+.S3method("vcov", "foo", function(x) x$vcov)
 
 # 70% CI for phi
 p70false <- profileCI(dummy2, loglik = ll_drda, parm = "phi", level = 0.7,
