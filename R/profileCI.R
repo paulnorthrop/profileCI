@@ -7,6 +7,12 @@
 #'
 #' @param object A fitted model object. This object must have a `coef` S3
 #'   method. If `faster = TRUE` then it must also have a `vcov` S3 method.
+#'   If necessary, these may be created using [`.S3method()`]. For example, if
+#'   `object` is a list inheriting from class `"foo"`, with coefficients
+#'   in `object$coefficients` and variance-covariance matrix in `object$vcov`,
+#'   then use `.S3method("coef", "foo", function(x) x$coefficients)` and
+#'   `.S3method("vcov", "foo", function(x) x$vcov)`.
+#'
 #' @param loglik A named function that returns the log-likelihood based on
 #'   input parameter values and data. The first argument must be the vector of
 #'   model parameters. If the likelihood is zero for any observation in the

@@ -20,7 +20,12 @@ profileCI(
 }
 \arguments{
 \item{object}{A fitted model object. This object must have a \code{coef} S3
-method. If \code{faster = TRUE} then it must also have a \code{vcov} S3 method.}
+method. If \code{faster = TRUE} then it must also have a \code{vcov} S3 method.
+If necessary, these may be created using \code{\link[=.S3method]{.S3method()}}. For example, if
+\code{object} is a list inheriting from class \code{"foo"}, with coefficients
+in \code{object$coefficients} and variance-covariance matrix in \code{object$vcov},
+then use \code{.S3method("coef", "foo", function(x) x$coefficients)} and
+\code{.S3method("vcov", "foo", function(x) x$vcov)}.}
 
 \item{loglik}{A named function that returns the log-likelihood based on
 input parameter values and data. The first argument must be the vector of
