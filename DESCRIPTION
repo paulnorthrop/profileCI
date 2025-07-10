@@ -16,7 +16,8 @@ Description: Provides tools for profiling a user-supplied log-likelihood
     profile log-likelihood flattens above the value at which a confidence limit
     is defined can be handled, leading to a limit at plus or minus infinity.
     Disjoint confidence intervals will not be found.
-Imports: graphics,
+Imports: datasets,
+    graphics,
     itp,
     stats,
     utils
