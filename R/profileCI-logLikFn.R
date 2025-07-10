@@ -51,7 +51,7 @@ logLikFn.nls <- function(object, pars, ...) {
   # Insert into nls_control
   call_list$control <- nls_control
   # Call stats:nls
-  val <- do.call(stats::nls, call_list[-1])
+  val <- do.call(stats::nls, call_list[-1], envir = environment(object$m$conv))
   # Calculate the log-likelihood, incorporating the weights
   res <- val$m$resid()
   n <- length(res)
