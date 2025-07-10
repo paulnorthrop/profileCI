@@ -58,8 +58,8 @@ test_that("Profile-based intervals for intercept only Poisson GLM", {
 # 6. nls() fast = TRUE vs fast = FALSE
 
 # From example(nls)
-DNase1 <- subset(DNase, Run == 1)
-fm1DNase1 <- nls(density ~ SSlogis(log(conc), Asym, xmid, scal), data = DNase1)
+fm1DNase1 <- nls(density ~ SSlogis(log(conc), Asym, xmid, scal),
+                 data = DNase1)
 prof1 <- profileCI(fm1DNase1, faster = TRUE)
 prof2 <- profileCI(fm1DNase1, faster = FALSE)
 test_that("nls() example, fast vs slow", {

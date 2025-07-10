@@ -8,6 +8,5 @@
 
 library(testthat)
 library(profileCI)
-library(datasets)
 
 test_check("profileCI")
