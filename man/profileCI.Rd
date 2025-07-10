@@ -166,9 +166,8 @@ fm1DNase1 <- nls(density ~ SSlogis(log(conc), Asym, xmid, scal), DNase1)
 confint(fm1DNase1)
 # profileCI() gives slightly different results because confint.nls() is
 # not based on profiling the log-likelihood but rather changes in the RSS
-prof <- profileCI(fm1DNase1, faster = FALSE)
+prof <- profileCI(fm1DNase1)
 prof
-plot(prof, parm = "scal")
 }
 \seealso{
 \code{\link{plot.profileCI}} and \code{\link{print.profileCI}}.

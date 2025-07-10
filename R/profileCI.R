@@ -133,9 +133,8 @@
 #' confint(fm1DNase1)
 #' # profileCI() gives slightly different results because confint.nls() is
 #' # not based on profiling the log-likelihood but rather changes in the RSS
-#' prof <- profileCI(fm1DNase1, faster = FALSE)
+#' prof <- profileCI(fm1DNase1)
 #' prof
-#' plot(prof, parm = "scal")
 #' @export
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
                       profile = TRUE, mult = 32, faster = TRUE, epsilon = -1,
