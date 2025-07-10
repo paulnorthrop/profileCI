@@ -159,6 +159,16 @@ poisson_loglik_2 <- function(pars, glm_object) {
 }
 prof <- profileCI(glm.D93, loglik = poisson_loglik_2, glm_object = glm.D93)
 prof
+
+## From example(nls)
+DNase1 <- subset(DNase, Run == 1)
+fm1DNase1 <- nls(density ~ SSlogis(log(conc), Asym, xmid, scal), DNase1)
+confint(fm1DNase1)
+# profileCI() gives slightly different results because confint.nls() is
+# not based on profiling the log-likelihood but rather changes in the RSS
+prof <- profileCI(fm1DNase1, faster = FALSE)
+prof
+plot(prof, parm = "scal")
 }
 \seealso{
 \code{\link{plot.profileCI}} and \code{\link{print.profileCI}}.

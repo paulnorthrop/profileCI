@@ -3,11 +3,14 @@
 \name{logLikFn}
 \alias{logLikFn}
 \alias{logLikFn.glm}
+\alias{logLikFn.nls}
 \title{Calculate Log-Likelihood}
 \usage{
 logLikFn(object, pars, ...)
 
 \method{logLikFn}{glm}(object, pars, ...)
+
+\method{logLikFn}{nls}(object, pars, ...)
 }
 \arguments{
 \item{object}{A fitted model object.}
@@ -31,4 +34,7 @@ at input parameter values.
 This generic function has been created to enable a function that
 calculates the log-likelihood for a parametric model at a given set of
 parameter values in \code{pars} to be available to the function \code{\link{profileCI}}.
+}
+\seealso{
+\code{\link{profileCI}}, \code{\link[stats:glm]{stats::glm}}, \code{\link[stats:nls]{stats::nls}}.
 }

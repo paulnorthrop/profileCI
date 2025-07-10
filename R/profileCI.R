@@ -126,6 +126,16 @@
 #' }
 #' prof <- profileCI(glm.D93, loglik = poisson_loglik_2, glm_object = glm.D93)
 #' prof
+#'
+#' ## From example(nls)
+#' DNase1 <- subset(DNase, Run == 1)
+#' fm1DNase1 <- nls(density ~ SSlogis(log(conc), Asym, xmid, scal), DNase1)
+#' confint(fm1DNase1)
+#' # profileCI() gives slightly different results because confint.nls() is
+#' # not based on profiling the log-likelihood but rather changes in the RSS
+#' prof <- profileCI(fm1DNase1, faster = FALSE)
+#' prof
+#' plot(prof, parm = "scal")
 #' @export
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
                       profile = TRUE, mult = 32, faster = TRUE, epsilon = -1,
@@ -140,8 +150,8 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     }
     has_logLikFnMethod <- sapply(class(object), FUN = find_logLikFn)
     if (any(has_logLikFnMethod)) {
-      loglik <- function(pars) {
-        return(logLikFn(object, pars = pars))
+      loglik <- function(pars, ...) {
+        return(logLikFn(object, pars = pars, ...))
       }
     } else {
       stop("If \"object\" has no logLikFn method then loglik must be supplied")

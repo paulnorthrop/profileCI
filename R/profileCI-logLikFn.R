@@ -14,6 +14,7 @@
 #'
 #'   The `logLikFn.glm` generic is specifically for the Poisson log-linear GLM
 #'   case.
+#' @seealso [`profileCI`], [`stats::glm`], [`stats::nls`].
 #' @name logLikFn
 NULL
 
@@ -28,5 +29,29 @@ logLikFn <- function(object, pars, ...) {
 logLikFn.glm <- function(object, pars, ...) {
   lambda <- exp(model.matrix(object) %*% pars)
   loglik <- stats::dpois(x = object$y, lambda = lambda, log = TRUE)
+  return(sum(loglik))
+}
+
+#' @rdname logLikFn
+#' @export
+logLikFn.nls <- function(object, pars, ...) {
+  # Extract the original call and make it a list
+  call_list <- as.list(object$call)
+  # Use the argument start to set the parameter values
+  call_list$start <- pars
+  names(call_list$start) <- names(coef(object))
+  # Extract the control argument to nls()
+  nls_control <- call_list$control
+  # Set tol = Inf so that the algorithm stops at the input parameter values
+  nls_control$tol <- Inf
+  # Insert into nls_control
+  call_list$control <- nls_control
+  # Call stats:nls
+  val <- do.call(stats::nls, call_list[-1])
+  # Calculate the log-likelihood, incorporating the weights
+  res <- val$m$resid()
+  n <- length(res)
+  w <- object$weights %||% rep_len(1, n)
+  loglik <- -n * (log(2 * pi) + 1 - log(n) + log(sum(w * res ^ 2))) / 2
   return(sum(loglik))
 }

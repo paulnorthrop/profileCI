@@ -55,3 +55,13 @@ test_that("Profile-based intervals for intercept only Poisson GLM", {
   expect_equal(conf0, prof0, tolerance = 1e-5, ignore_attr = TRUE)
 })
 
+# 6. nls() fast = TRUE vs fast = FALSE
+
+# From example(nls)
+DNase1 <- subset(DNase, Run == 1)
+fm1DNase1 <- nls(density ~ SSlogis(log(conc), Asym, xmid, scal), DNase1)
+prof1 <- profileCI(fm1DNase1, faster = TRUE)
+prof2 <- profileCI(fm1DNase1, faster = FALSE)
+test_that("nls() example, fast vs slow", {
+  expect_equal(prof1, prof2, tolerance = 1e-5, ignore_attr = TRUE)
+})
