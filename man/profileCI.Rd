@@ -160,7 +160,7 @@ poisson_loglik_2 <- function(pars, glm_object) {
 prof <- profileCI(glm.D93, loglik = poisson_loglik_2, glm_object = glm.D93)
 prof
 
-## From example(nls)
+## Nonlinear least squares, from example(nls)
 DNase1 <- subset(DNase, Run == 1)
 fm1DNase1 <- nls(density ~ SSlogis(log(conc), Asym, xmid, scal), DNase1)
 confint(fm1DNase1)
