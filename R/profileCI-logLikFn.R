@@ -5,15 +5,19 @@
 #'
 #' @param object A fitted model object.
 #' @param pars A numeric vector of parameters of the model.
-#' @param ... Further arguments.
+#' @param ... Further arguments. None are used in the `logLikFn.glm` and
+#'   `logLikFn.nls` generics.
 #' @details This generic function has been created to enable a function that
 #'   calculates the log-likelihood for a parametric model at a given set of
 #'   parameter values in `pars` to be available to the function [`profileCI`].
 #' @return A numeric scalar. The value of the log-likelihood function for the
 #'   fitted model object `object` for parameter values `pars`.
 #'
-#'   The `logLikFn.glm` generic is specifically for the Poisson log-linear GLM
-#'   case.
+#'   The `logLikFn.glm` generic is specifically for the unweighted Poisson
+#'   log-linear GLM case.
+#'
+#'   The `logLikFn.nls` generic is more general and should work for all
+#'   model objects returned by [`stats::nls`].
 #' @seealso [`profileCI`], [`stats::glm`], [`stats::nls`].
 #' @name logLikFn
 NULL

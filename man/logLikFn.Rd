@@ -17,14 +17,18 @@ logLikFn(object, pars, ...)
 
 \item{pars}{A numeric vector of parameters of the model.}
 
-\item{...}{Further arguments.}
+\item{...}{Further arguments. None are used in the \code{logLikFn.glm} and
+\code{logLikFn.nls} generics.}
 }
 \value{
 A numeric scalar. The value of the log-likelihood function for the
 fitted model object \code{object} for parameter values \code{pars}.
 
-The \code{logLikFn.glm} generic is specifically for the Poisson log-linear GLM
-case.
+The \code{logLikFn.glm} generic is specifically for the unweighted Poisson
+log-linear GLM case.
+
+The \code{logLikFn.nls} generic is more general and should work for all
+model objects returned by \code{\link[stats:nls]{stats::nls}}.
 }
 \description{
 This is a generic function for calculating a log-likelihood for an object
