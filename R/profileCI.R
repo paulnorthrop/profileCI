@@ -197,7 +197,7 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     if (length(lb) != length(parm)) {
       stop("\"lb\" must have the same length as \"parm\"")
     }
-    if (any(lb >= coef(object))) {
+    if (any(lb >= coef(object)[parm])) {
       stop("\"lb\" must be smaller than \"coef(object)\" elementwise")
     }
   }
@@ -207,7 +207,7 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     if (length(ub) != length(parm)) {
       stop("\"ub\" must have the same length as \"parm\"")
     }
-    if (any(ub <= coef(object))) {
+    if (any(ub <= coef(object)[parm])) {
       stop("\"ub\" must be larger than \"coef(object)\" elementwise")
     }
   }
