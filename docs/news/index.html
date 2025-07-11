@@ -36,12 +36,15 @@
 <h2 class="pkg-version" data-toc-text="1.1.0" id="profileci-110">profileCI 1.1.0<a class="anchor" aria-label="anchor" href="#profileci-110"></a></h2>
 <div class="section level3">
 <h3 id="new-features-1-1-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0"></a></h3>
-<ul><li>The argument <code>optim_args</code> actually works now! Thank you to Jakob Madsen (<a href="https://github.com/paulnorthrop/profileCI/issues/1">#1</a>).</li>
-<li>An argument <code>flat</code> has been added to <code><a href="../reference/profileCI.html">profileCI()</a></code> to deal with cases where one or both of the limits is (minus or plus) infinity because the profile log-likelihood fails to drop below the level that defines the confidence interval.</li>
+<ul><li>An argument <code>flat</code> has been added to <code><a href="../reference/profileCI.html">profileCI()</a></code> to deal with cases where one or both of the limits is (minus or plus) infinity because the profile log-likelihood fails to drop below the level that defines the confidence interval.</li>
+<li>Arguments <code>lb</code> and <code>ub</code> have been added to <code><a href="../reference/profileCI.html">profileCI()</a></code> to place respective lower and upper bounds on the interval over which profiling takes place.</li>
+<li>A <code>logLikFn</code> method has been added for objects inheriting from class <code>nls</code> and an example added to the documentation of <code><a href="../reference/profileCI.html">profileCI()</a></code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-and-minor-improvements-1-1-0">Bug fixes and minor improvements<a class="anchor" aria-label="anchor" href="#bug-fixes-and-minor-improvements-1-1-0"></a></h3>
-<ul><li>Arguments to the user-supplied log-likelihood function are extracted explicitly to simplify the code and avoid potential argument matching issues.</li>
+<ul><li>The argument <code>optim_args</code> actually works now! Thank you to Jakob Madsen (<a href="https://github.com/paulnorthrop/profileCI/issues/1">#1</a>).</li>
+<li>An explanation of the creation of <code>coef</code> and <code>vcov</code> methods has been added to the description of <code>object</code> in the <code><a href="../reference/profileCI.html">profileCI()</a></code> documentation.</li>
+<li>Arguments to the user-supplied log-likelihood function are extracted explicitly to simplify the code and avoid potential argument matching issues.</li>
 </ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -53,7 +56,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

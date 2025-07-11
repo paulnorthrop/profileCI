@@ -45,6 +45,9 @@ at input parameter values.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">logLikFn</span><span class="op">(</span><span class="va">object</span>, <span class="va">pars</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'glm'</span></span>
+<span><span class="fu">logLikFn</span><span class="op">(</span><span class="va">object</span>, <span class="va">pars</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'nls'</span></span>
 <span><span class="fu">logLikFn</span><span class="op">(</span><span class="va">object</span>, <span class="va">pars</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -61,19 +64,28 @@ at input parameter values.</p>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Further arguments.</p></dd>
+<dd><p>Further arguments. None are used in the <code>logLikFn.glm</code> and
+<code>logLikFn.nls</code> generics.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric scalar. The value of the log-likelihood function for the
 fitted model object <code>object</code> for parameter values <code>pars</code>.</p>
+<p>The <code>logLikFn.glm</code> generic is specifically for the unweighted Poisson
+log-linear GLM case.</p>
+<p>The <code>logLikFn.nls</code> generic is more general and should work for all
+model objects returned by <code><a href="https://rdrr.io/r/stats/nls.html" class="external-link">stats::nls</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This generic function has been created to enable a function that
 calculates the log-likelihood for a parametric model at a given set of
 parameter values in <code>pars</code> to be available to the function <code><a href="profileCI.html">profileCI</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="profileCI.html">profileCI</a></code>, <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">stats::glm</a></code>, <code><a href="https://rdrr.io/r/stats/nls.html" class="external-link">stats::nls</a></code>.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -85,7 +97,7 @@ parameter values in <code>pars</code> to be available to the function <code><a h
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

@@ -59,6 +59,8 @@ generic.</p>
 <span>  faster <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  epsilon <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
 <span>  flat <span class="op">=</span> <span class="fl">1e-06</span>,</span>
+<span>  <span class="va">lb</span>,</span>
+<span>  <span class="va">ub</span>,</span>
 <span>  optim_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -69,7 +71,12 @@ generic.</p>
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>A fitted model object. This object must have a <code>coef</code> S3
-method. If <code>faster = TRUE</code> then it must also have a <code>vcov</code> S3 method.</p></dd>
+method. If <code>faster = TRUE</code> then it must also have a <code>vcov</code> S3 method.
+If necessary, these may be created using <code><a href="https://rdrr.io/r/base/S3method.html" class="external-link">.S3method()</a></code>. For example, if
+<code>object</code> is a list inheriting from class <code>"foo"</code>, with coefficients
+in <code>object$coefficients</code> and variance-covariance matrix in <code>object$vcov</code>,
+then use <code>.S3method("coef", "foo", function(x) x$coefficients)</code> and
+<code>.S3method("vcov", "foo", function(x) x$vcov)</code>.</p></dd>
 
 
 <dt id="arg-loglik">loglik<a class="anchor" aria-label="anchor" href="#arg-loglik"></a></dt>
@@ -122,7 +129,7 @@ started at the corresponding symmetric lower (upper) confidence limit.</p></dd>
 <dd><p>Only relevant if <code>profile = TRUE</code>. A numeric vector of values
 that determine the accuracy of the confidence limits. <code>epsilon</code> is
 recycled to the length of the parameter vector <code>parm</code>.</p><ul><li><p>If <code>epsilon[i] &gt; 0</code> then this value is passed as the argument <code>epsilon</code>
-to the <code><a href="https://paulnorthrop.github.io/itp/reference/itp.html" class="external-link">itp::itp</a></code> function, which estimates the parameter values for
+to the <code><a href="https://github.com/paulnorthrop/itp/reference/itp.html" class="external-link">itp::itp</a></code> function, which estimates the parameter values for
 which the profile log-likelihood for parameter <code>i</code> drops to the value
 that defines the confidence limits, once profiling has been successful
 in finding an interval within which this value lies.</p></li>
@@ -139,6 +146,16 @@ for a confidence limits in cases where the profile log-likelihood becomes
 flat. If a reduction in profile log-likelihood is less than
 <code>flat * mult / 100</code> then the search is stopped. The value of the returned
 confidence limit is <code>Inf</code> for an upper limit and <code>-Inf</code> for a lower limit.</p></dd>
+
+
+<dt id="arg-lb-ub">lb, ub<a class="anchor" aria-label="anchor" href="#arg-lb-ub"></a></dt>
+<dd><p>Optional numeric vectors of length <code>length(parm)</code>. If supplied,
+<code>lb[i]</code> and/or  <code>ub[i]</code> place respective lower and upper bounds on the
+interval over which profiling takes place for parameter <code>parm[i]</code>.
+If a bound is reached before a confidence limit is determined or before
+the profile log-likelihood is determined to have become flat, then the
+relevant limit is returned as <code>NA</code>. Elementwise, <code>lb</code> must be smaller
+than, and <code>ub</code> larger than, <code>coef(object)</code>.</p></dd>
 
 
 <dt id="arg-optim-args">optim_args<a class="anchor" aria-label="anchor" href="#arg-optim-args"></a></dt>
@@ -179,6 +196,9 @@ confidence intervals fairly quickly. If the object returned from
 <code>profileCI</code> is plotted, using <code><a href="profileCI_methods.html">plot.profileCI</a></code>, then we will not obtain
 a smooth plot of a profile log-likelihood. Setting <code>faster = FALSE</code> and
 reducing <code>mult</code>, perhaps to <code>8</code> or <code>16</code> should produce a smoother plot.</p>
+<p>The arguments <code>flat1, lb</code> and <code>ub</code> are provided to prevent a call to
+<code>profileCI</code> hanging in a search for a confidence limit that will never be
+found.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -208,8 +228,8 @@ reducing <code>mult</code>, perhaps to <code>8</code> or <code>16</code> should 
 <span class="r-out co"><span class="r-pr">#&gt;</span> treatment2  -0.3919928  0.39199279</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> treatment3  -0.3919928  0.39199279</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A logLikFn.glm S3 method is provided in profileCI so we do not need to</span></span></span>
-<span class="r-in"><span><span class="co"># supply loglik explicitly</span></span></span>
+<span class="r-in"><span><span class="co"># A Poisson log-linear GLM logLikFn.glm S3 method is provided in profileCI</span></span></span>
+<span class="r-in"><span><span class="co"># so we do not need to supply loglik explicitly</span></span></span>
 <span class="r-in"><span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu">profileCI</span><span class="op">(</span><span class="va">glm.D93</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">prof</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   2.5%       97.5%</span>
@@ -253,6 +273,27 @@ reducing <code>mult</code>, perhaps to <code>8</code> or <code>16</code> should 
 <span class="r-out co"><span class="r-pr">#&gt;</span> outcome3    -0.6753594  0.08244109</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> treatment2  -0.3932489  0.39324886</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> treatment3  -0.3932489  0.39324886</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Nonlinear least squares, from example(nls)</span></span></span>
+<span class="r-in"><span><span class="va">DNase1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">DNase</span>, <span class="va">Run</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fm1DNase1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/nls.html" class="external-link">nls</a></span><span class="op">(</span><span class="va">density</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSlogis.html" class="external-link">SSlogis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">conc</span><span class="op">)</span>, <span class="va">Asym</span>, <span class="va">xmid</span>, <span class="va">scal</span><span class="op">)</span>, <span class="va">DNase1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">fm1DNase1</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting for profiling to be done...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           2.5%    97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Asym 2.1935437 2.538804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> xmid 1.3214540 1.678751</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scal 0.9743072 1.114939</span>
+<span class="r-in"><span><span class="co"># profileCI() gives slightly different results because confint.nls() is</span></span></span>
+<span class="r-in"><span><span class="co"># not based on profiling the log-likelihood but rather changes in the RSS</span></span></span>
+<span class="r-in"><span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu">profileCI</span><span class="op">(</span><span class="va">fm1DNase1</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in logLikFn.nls(object, pars = pars, ...):</span> object 'DNase1' not found</span>
+<span class="r-in"><span><span class="va">prof</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   2.5%       97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  2.6958271  3.36656379</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> outcome2    -0.8576884 -0.06255514</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> outcome3    -0.6753594  0.08244109</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> treatment2  -0.3932489  0.39324886</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> treatment3  -0.3932489  0.39324886</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -264,7 +305,7 @@ reducing <code>mult</code>, perhaps to <code>8</code> or <code>16</code> should 
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>
