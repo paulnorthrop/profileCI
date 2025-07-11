@@ -195,11 +195,7 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     # the confidence limits by quadratic interpolation
 
     # Upper
-    if (flat_upper) {
-      up_lim <- Inf
-    } else if (hit_ub) {
-      up_lim <- NA
-    } else {
+    if (!flat_upper && !hit_ub) {
       o_args <- list(par = sol_upper, fn = profiling_fn, par_which = up_lim)
       opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
       # If optim errors then set different initial values and try again
@@ -216,11 +212,7 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     }
 
     # Lower
-    if (flat_lower) {
-      low_lim <- -Inf
-    } else if (hit_lb) {
-      low_lim <- NA
-    } else {
+    if (!flat_lower && !hit_lb) {
       o_args <- list(par = sol_lower, fn = profiling_fn, par_which = low_lim)
       opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
       # If optim errors then set different initial values and try again
@@ -254,12 +246,8 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
         attr(val, "parameters") <- opt$par
         return(val)
       }
-      if (flat_upper) {
-        up_lim <- Inf
-      } else if (hit_ub) {
-        up_lim <- NA
-      } else {
-        # Find the upper limit of the confidence interval
+      # Find the upper limit of the confidence interval
+      if (!flat_upper && !hit_ub) {
         if (up_new > 0) {
           interval <- c(x1up, save_up_lim)
         } else {
@@ -271,12 +259,8 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
                           epsilon = epsilon)
         up_lim <- upper$root
       }
-      if (flat_lower) {
-        low_lim <- -Inf
-      } else if (hit_lb) {
-        low_lim <- NA
-      } else {
-        # Find the lower limit of the confidence interval
+      # Find the lower limit of the confidence interval
+      if (!flat_lower && !hit_lb) {
         if (low_new > 0) {
           interval <- c(x1low, save_low_lim)
         } else {
@@ -624,11 +608,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
     # the confidence limits by quadratic interpolation
 
     # Upper
-    if (flat_upper) {
-      up_lim <- Inf
-    } else if (hit_ub) {
-      up_lim <- NA
-    } else {
+    if (!flat_upper && !hit_ub) {
       o_args <- list(par = sol_upper, fn = profiling_fn, par_which = up_lim)
       opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
       # If optim errors then reset the initial values and try again
@@ -645,11 +625,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
     }
 
     # Lower
-    if (flat_lower) {
-      low_lim <- -Inf
-    } else if (hit_lb) {
-      low_lim <- NA
-    } else {
+    if (!flat_lower && !hit_lb) {
       o_args <- list(par = sol_lower, fn = profiling_fn, par_which = low_lim)
       opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
       # If optim errors then reset the initial values and try again
@@ -714,12 +690,8 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
         attr(val, "parameters") <- opt$par
         return(val)
       }
-      if (flat_upper) {
-        up_lim <- Inf
-      } else if (hit_ub) {
-        up_lim <- NA
-      } else {
-        # Find the upper limit of the confidence interval
+      # Find the upper limit of the confidence interval
+      if (!flat_upper && !hit_ub) {
         if (up_new > 0) {
           interval <- c(x1up, save_up_lim)
         } else {
@@ -731,12 +703,8 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
                           epsilon = epsilon)
         up_lim <- upper$root
       }
-      if (flat_lower) {
-        low_lim <- -Inf
-      } else if (hit_lb) {
-        low_lim <- NA
-      } else {
-        # Find the lower limit of the confidence interval
+      # Find the lower limit of the confidence interval
+      if (!flat_lower && !hit_lb) {
         if (low_new > 0) {
           interval <- c(x1low, save_low_lim)
         } else {
