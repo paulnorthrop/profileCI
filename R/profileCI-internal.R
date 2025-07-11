@@ -534,7 +534,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
   flat_lower <- FALSE
   # Add a check for hitting the lower bound lb
   hit_lb <- FALSE
-  while (while_condition(my_val) && !flat_lower){
+  while (while_condition(my_val) && !flat_lower && !hit_lb){
     par_which <- par_which - delta
     o_args <- list(par = sol, fn = profiling_fn, par_which = par_which)
     opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
