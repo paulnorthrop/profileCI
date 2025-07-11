@@ -12,7 +12,7 @@ NULL
 #' @keywords internal
 #' @rdname profileCI-internal
 profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
-                       epsilon, optim_args, mult, flat, ...) {
+                       epsilon, optim_args, mult, flat, lb, ub, ...) {
   # To avoid potential issues with passing arguments to the negated
   # log-likelihood function via ... we save these arguments in loglik_args now
   # and use them inside profiling_fn()
@@ -59,7 +59,9 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
   sol <- mle[-which]
   # Add a check for flatness of the profile log-likelihood
   flat_upper <- FALSE
-  while (my_val > conf_line && !flat_upper){
+  # Add a check for hitting the upper bound ub
+  hit_ub <- FALSE
+  while (my_val > conf_line && !flat_upper && !hit_ub){
     par_which <- par_which + inc
     o_args <- list(par = sol, fn = profiling_fn, par_which = par_which)
     opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
@@ -83,6 +85,9 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     if (one_se_away && delta_loglik > 0 && delta_loglik < flat) {
       flat_upper <- TRUE
     }
+    if (par_which >= ub) {
+      hit_ub <- TRUE
+    }
     # Save the current value of the profile log-likelihood
     my_val <- v2[ii]
   }
@@ -104,7 +109,9 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
   sol <- mle[-which]
   # Add a check for flatness of the profile log-likelihood
   flat_lower <- FALSE
-  while (my_val > conf_line && !flat_lower){
+  # Add a check for hitting the lower bound lb
+  hit_lb <- FALSE
+  while (my_val > conf_line && !flat_lower && !hit_lb){
     par_which <- par_which - inc
     o_args <- list(par = sol, fn = profiling_fn, par_which = par_which)
     opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
@@ -128,6 +135,9 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     if (one_se_away && delta_loglik > 0 && delta_loglik < flat) {
       flat_lower <- TRUE
     }
+    if (par_which <= lb) {
+      hit_lb <- TRUE
+    }
     # Save the current value of the profile log-likelihood
     my_val <- v1[ii]
   }
@@ -149,26 +159,30 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
   temp <- diff(prof_lik - conf_line > 0)
 
   # Find the upper limit of the confidence interval
-  if (!flat_upper) {
+  if (flat_upper) {
+    up_lim <- Inf
+  } else if (hit_ub) {
+    up_lim <- NA
+  } else {
     loc_upper <- which(temp == -1)
     x1up <- par_values[loc_upper]
     x2up <- par_values[loc_upper + 1]
     y1up <- prof_lik[loc_upper]
     y2up <- prof_lik[loc_upper + 1]
     up_lim <- x1up + (conf_line - y1up) * (x2up - x1up) / (y2up - y1up)
-  } else {
-    up_lim <- Inf
   }
   # Find the lower limit of the confidence interval
-  if (!flat_lower) {
+  if (flat_lower) {
+    low_lim <- -Inf
+  } else if (hit_lb) {
+    low_lim <- NA
+  } else {
     loc_lower <- which(temp == 1)
     x1low <- par_values[loc_lower]
     x2low <- par_values[loc_lower + 1]
     y1low <- prof_lik[loc_lower]
     y2low <- prof_lik[loc_lower + 1]
     low_lim <- x1low + (conf_line - y1low) * (x2low - x1low) / (y2low - y1low)
-  } else {
-    low_lim <- -Inf
   }
 
   # If epsilon = 0 then use linear interpolation
@@ -183,6 +197,8 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     # Upper
     if (flat_upper) {
       up_lim <- Inf
+    } else if (hit_ub) {
+      up_lim <- NA
     } else {
       o_args <- list(par = sol_upper, fn = profiling_fn, par_which = up_lim)
       opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
@@ -202,6 +218,8 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     # Lower
     if (flat_lower) {
       low_lim <- -Inf
+    } else if (hit_lb) {
+      low_lim <- NA
     } else {
       o_args <- list(par = sol_lower, fn = profiling_fn, par_which = low_lim)
       opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
@@ -238,6 +256,8 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
       }
       if (flat_upper) {
         up_lim <- Inf
+      } else if (hit_ub) {
+        up_lim <- NA
       } else {
         # Find the upper limit of the confidence interval
         if (up_new > 0) {
@@ -253,6 +273,8 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
       }
       if (flat_lower) {
         low_lim <- -Inf
+      } else if (hit_lb) {
+        low_lim <- NA
       } else {
         # Find the lower limit of the confidence interval
         if (low_new > 0) {
@@ -272,7 +294,7 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
       # below conf_line
 
       n <- length(par_values)
-      if (flat_upper) {
+      if (flat_upper || hit_ub) {
         add_upper_lim <- NULL
         add_upper_prof <- NULL
         loc_upper <- n - 1
@@ -280,7 +302,7 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
         add_upper_lim <- up_lim
         add_upper_prof <- upper$f.root + conf_line
       }
-      if (flat_lower) {
+      if (flat_lower || hit_lb) {
         add_lower_lim <- NULL
         add_lower_prof <- NULL
         loc_lower <- 1
@@ -295,13 +317,13 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
                     prof_lik[(loc_lower + 1):loc_upper],
                     add_upper_prof, prof_lik[(loc_upper + 1):n])
       # Save the parameter values that apply to the solutions from itp::itp()
-      if (!flat_lower) {
+      if (!flat_lower && !hit_lb) {
         lower_pars <- numeric(n_pars)
         lower_pars[which] <- lower$root
         lower_pars[-which] <- attr(lower$f.root, "parameters")
         names(lower_pars) <- names(mle)
       }
-      if (!flat_upper) {
+      if (!flat_upper && !hit_ub) {
         upper_pars <- numeric(n_pars)
         upper_pars[which] <- upper$root
         upper_pars[-which] <- attr(upper$f.root, "parameters")
@@ -323,7 +345,7 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
 #' @rdname profileCI-internal
 faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
                               level, mle, ci_sym_mat, inc, epsilon, optim_args,
-                              mult, flat, ...) {
+                              mult, flat, lb, ub, ...) {
   # To avoid potential issues with passing arguments to the negated
   # log-likelihood function via ... we save these arguments in loglik_args now
   # and use them inside profiling_fn()
@@ -411,7 +433,9 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
 
   # Add a check for flatness of the profile log-likelihood
   flat_upper <- FALSE
-  while (while_condition(my_val) && !flat_upper){
+  # Add a check for hitting the upper bound ub
+  hit_ub <- FALSE
+  while (while_condition(my_val) && !flat_upper && !hit_ub){
     par_which <- par_which + delta
     o_args <- list(par = sol, fn = profiling_fn, par_which = par_which)
     opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
@@ -434,6 +458,9 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
     delta_loglik <- 100 * (my_val + opt$value) / mult
     if (three_se_away && delta_loglik > 0 && delta_loglik < flat) {
       flat_upper <- TRUE
+    }
+    if (par_which >= ub) {
+      hit_ub <- TRUE
     }
     # Save the current value of the profile log-likelihood
     my_val <- v2[ii]
@@ -505,6 +532,8 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
 
   # Add a check for flatness of the profile log-likelihood
   flat_lower <- FALSE
+  # Add a check for hitting the lower bound lb
+  hit_lb <- FALSE
   while (while_condition(my_val) && !flat_lower){
     par_which <- par_which - delta
     o_args <- list(par = sol, fn = profiling_fn, par_which = par_which)
@@ -528,6 +557,9 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
     delta_loglik <- 100 * (my_val + opt$value) / mult
     if (three_se_away && delta_loglik > 0 && delta_loglik < flat) {
       flat_lower <- TRUE
+    }
+    if (par_which <= lb) {
+      hit_lb <- TRUE
     }
     # Save the current value of the profile log-likelihood
     my_val <- v1[ii]
@@ -555,26 +587,31 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
   temp <- diff(prof_lik - conf_line > 0)
 
   # Find the upper limit of the confidence interval
-  if (!flat_upper) {
+  if (flat_upper) {
+    up_lim <- Inf
+  } else if (hit_ub) {
+    up_lim <- NA
+  } else {
     loc_upper <- which(temp == -1)
     x1up <- par_values[loc_upper]
     x2up <- par_values[loc_upper + 1]
     y1up <- prof_lik[loc_upper]
     y2up <- prof_lik[loc_upper + 1]
     up_lim <- x1up + (conf_line - y1up) * (x2up - x1up) / (y2up - y1up)
-  } else {
-    up_lim <- Inf
+
   }
   # Find the lower limit of the confidence interval
-  if (!flat_lower) {
+  if (flat_lower) {
+    low_lim <- -Inf
+  } else if (hit_lb) {
+    low_lim <- NA
+  } else {
     loc_lower <- which(temp == 1)
     x1low <- par_values[loc_lower]
     x2low <- par_values[loc_lower + 1]
     y1low <- prof_lik[loc_lower]
     y2low <- prof_lik[loc_lower + 1]
     low_lim <- x1low + (conf_line - y1low) * (x2low - x1low) / (y2low - y1low)
-  } else {
-    low_lim <- -Inf
   }
 
   # If epsilon = 0 then use linear interpolation
@@ -589,6 +626,8 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
     # Upper
     if (flat_upper) {
       up_lim <- Inf
+    } else if (hit_ub) {
+      up_lim <- NA
     } else {
       o_args <- list(par = sol_upper, fn = profiling_fn, par_which = up_lim)
       opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
@@ -607,7 +646,9 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
 
     # Lower
     if (flat_lower) {
-      up_lim <- Inf
+      low_lim <- -Inf
+    } else if (hit_lb) {
+      low_lim <- NA
     } else {
       o_args <- list(par = sol_lower, fn = profiling_fn, par_which = low_lim)
       opt <- try(do.call(stats::optim, c(o_args, optim_args)), silent = TRUE)
@@ -631,7 +672,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
     # when we do something similar below for the epsilon > 0 case
     if (epsilon < 0) {
       n <- length(par_values)
-      if (flat_upper) {
+      if (flat_upper || hit_ub) {
         add_upper_lim <- NULL
         add_upper_prof <- NULL
         loc_upper <- n - 1
@@ -639,7 +680,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
         add_upper_lim <- up_lim
         add_upper_prof <- up_new
       }
-      if (flat_lower) {
+      if (flat_lower || hit_lb) {
         add_lower_lim <- NULL
         add_lower_prof <- NULL
         loc_lower <- 1
@@ -675,6 +716,8 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
       }
       if (flat_upper) {
         up_lim <- Inf
+      } else if (hit_ub) {
+        up_lim <- NA
       } else {
         # Find the upper limit of the confidence interval
         if (up_new > 0) {
@@ -689,7 +732,9 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
         up_lim <- upper$root
       }
       if (flat_lower) {
-        up_lim <- Inf
+        low_lim <- -Inf
+      } else if (hit_lb) {
+        low_lim <- NA
       } else {
         # Find the lower limit of the confidence interval
         if (low_new > 0) {
@@ -708,7 +753,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
       # below conf_line
 
       n <- length(par_values)
-      if (flat_upper) {
+      if (flat_upper || hit_ub) {
         add_upper_lim <- NULL
         add_upper_prof <- NULL
         loc_upper <- n - 1
@@ -716,7 +761,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
         add_upper_lim <- up_lim
         add_upper_prof <- upper$f.root + conf_line
       }
-      if (flat_lower) {
+      if (flat_lower || hit_lb) {
         add_lower_lim <- NULL
         add_lower_prof <- NULL
         loc_lower <- 1
@@ -732,13 +777,13 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
                     add_upper_prof, prof_lik[(loc_upper + 1):n])
 
       # Save the parameter values that apply to the solutions from itp::itp()
-      if (!flat_lower) {
+      if (!flat_lower && !hit_lb) {
         lower_pars <- numeric(n_pars)
         lower_pars[which] <- lower$root
         lower_pars[-which] <- attr(lower$f.root, "parameters")
         names(lower_pars) <- names(mle)
       }
-      if (!flat_upper) {
+      if (!flat_upper && !hit_ub) {
         upper_pars <- numeric(n_pars)
         upper_pars[which] <- upper$root
         upper_pars[-which] <- attr(upper$f.root, "parameters")

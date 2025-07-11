@@ -19,6 +19,8 @@ profile_ci(
   optim_args,
   mult,
   flat,
+  lb,
+  ub,
   ...
 )
 
@@ -35,6 +37,8 @@ faster_profile_ci(
   optim_args,
   mult,
   flat,
+  lb,
+  ub,
   ...
 )
 
