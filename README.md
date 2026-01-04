@@ -3,8 +3,6 @@
 
 # profileCI
 
-[![Appveyor Build
-status](https://ci.appveyor.com/api/projects/status/99jojhgk9t4agdmv/branch/main?svg=true)](https://ci.appveyor.com/project/paulnorthrop/profileCI/branch/main)
 [![R-CMD-check](https://github.com/paulnorthrop/profileCI/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/paulnorthrop/profileCI/actions/workflows/R-CMD-check.yaml)
 [![Coverage
 Status](https://codecov.io/github/paulnorthrop/profileCI/coverage.svg?branch=master)](https://app.codecov.io/github/paulnorthrop/profileCI?branch=master)
