@@ -252,12 +252,11 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     # starting outside the parameter range of the parameter of interest.
     # Move in 10% of the distance from the bound to the MLE
     propn <- 0.1
-    print(ci_sym_mat)
     if (any(is.finite(lb))) {
-      ci_sym_mat[, 1] <- pmax(ci_sym_mat[, 1], lb + propn * (cf - lb))
+      ci_sym_mat[, 1] <- pmax(ci_sym_mat[, 1], lb + propn * (cf[parm] - lb))
     }
     if (any(is.finite(ub))) {
-      ci_sym_mat[, 2] <- pmin(ci_sym_mat[, 2], ub - propn * (ub - cf))
+      ci_sym_mat[, 2] <- pmin(ci_sym_mat[, 2], ub - propn * (ub - cf[parm]))
     }
     print(ci_sym_mat)
   } else {
