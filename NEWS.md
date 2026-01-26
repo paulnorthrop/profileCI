@@ -1,7 +1,8 @@
-# profileCI 1.1.0.9000
+# profileCI 1.1.1
 
 ## Bug fixes and minor improvements
 
+* The default setting in `profileCI()` is now `faster = FALSE` because it is more robust. 
 * When the argument `epsilon` to `profileCI()` is negative, monotonic cubic spline interpolation is now used instead of quadratic interpolation. Quadratic interpolation could fail in some cases.
 * In the documentation of the argument `object` to `profileCI()` it is emphasized that the parameters in the fitted model object must have names.
 

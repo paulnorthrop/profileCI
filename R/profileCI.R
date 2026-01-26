@@ -40,8 +40,10 @@
 #'   standard error of the estimator of the parameter. Decreasing `mult`
 #'   profiles at more points but will be slower.
 #' @param faster A logical scalar. If `faster = TRUE` then the profiling of the
-#'   log-likelihood is in search of a lower (upper) confidence limit is
+#'   log-likelihood in search of a lower (upper) confidence limit is
 #'   started at the corresponding symmetric lower (upper) confidence limit.
+#'   The default, `faster = FALSE`, is more robust, particularly if a symmetric
+#'   limit is close to, or beyond, the edge of the parameter space.
 #' @param epsilon Only relevant if `profile = TRUE`. A numeric vector of values
 #'   that determine the accuracy of the confidence limits. `epsilon` is
 #'   recycled to the length of the parameter vector `parm`.
@@ -152,7 +154,7 @@
 #' prof
 #' @export
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
-                      profile = TRUE, mult = 32, faster = TRUE, epsilon = -1,
+                      profile = TRUE, mult = 32, faster = FALSE, epsilon = -1,
                       flat = 1e-6, lb, ub, optim_args = list()) {
   # Force flat to be positive
   flat <- abs(flat)
@@ -245,6 +247,11 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     up <- paste0(100 - 100 * (1 - level)/ 2, "%")
     colnames(ci_mat) <- c(low, up)
     ci_sym_mat <- ci_mat
+    # If lb and/or ub have been supplied then constrain the values in ci_sym_mat
+    # in light of this. This prevents the search for the profile interval
+    # starting outside the parameter range of the parameter of interest.
+    ci_sym_mat[, 1] <- pmax(ci_sym_mat[, 1], lb)
+    ci_sym_mat[, 2] <- pmin(ci_sym_mat[, 2], ub)
   } else {
     ci_mat <- matrix(NA, ncol = 2, nrow = length(parm))
   }
@@ -256,7 +263,6 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     class(ci_mat) <- c("profileCI", "matrix", "array")
     return(ci_mat)
   }
-
   # The number of parameters
   n_parm <- length(parm)
   # Force epsilon to have length equal to the number of parameters
