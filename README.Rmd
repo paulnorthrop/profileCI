@@ -63,13 +63,13 @@ prof
 
 We can visualise the profile likelihood for a parameter using a plot method. 
 
-```{r }
+```{r, fig.alt = "Non-smooth plot of the profile log-likelihood for the parameter outcome2"}
 plot(prof, parm = "outcome2")
 ```
 
 To obtain smooth version of this plot, we call `profileCI()` with `mult = 8` and `faster = FALSE`, but this is a much slower calculation. 
 
-```{r}
+```{r, fig.alt = "Smooth plot of the profile log-likelihood for the parameter outcome2"}
 prof <- profileCI(glm.D93, loglik = poisson_loglik, mult = 8, faster = FALSE)
 plot(prof, parm = "outcome2")
 ```

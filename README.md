@@ -101,7 +101,7 @@ method.
 plot(prof, parm = "outcome2")
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" alt="Non-smooth plot of the profile log-likelihood for the parameter outcome2" width="100%" />
 
 To obtain smooth version of this plot, we call `profileCI()` with
 `mult = 8` and `faster = FALSE`, but this is a much slower calculation.
@@ -111,7 +111,7 @@ prof <- profileCI(glm.D93, loglik = poisson_loglik, mult = 8, faster = FALSE)
 plot(prof, parm = "outcome2")
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" alt="Smooth plot of the profile log-likelihood for the parameter outcome2" width="100%" />
 
 By default, once it has been determined that a limit lies between two
 values of the parameter, quadratic interpolation is used to estimate the
