@@ -250,8 +250,16 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     # If lb and/or ub have been supplied then constrain the values in ci_sym_mat
     # in light of this. This prevents the search for the profile interval
     # starting outside the parameter range of the parameter of interest.
-    ci_sym_mat[, 1] <- pmax(ci_sym_mat[, 1], lb)
-    ci_sym_mat[, 2] <- pmin(ci_sym_mat[, 2], ub)
+    # Move in 10% of the distance from the bound to the MLE
+    propn <- 0.1
+    print(ci_sym_mat)
+    if (any(is.finite(lb))) {
+      ci_sym_mat[, 1] <- pmax(ci_sym_mat[, 1], lb + propn * (cf - lb))
+    }
+    if (any(is.finite(ub))) {
+      ci_sym_mat[, 2] <- pmin(ci_sym_mat[, 2], ub - propn * (ub - cf))
+    }
+    print(ci_sym_mat)
   } else {
     ci_mat <- matrix(NA, ncol = 2, nrow = length(parm))
   }
