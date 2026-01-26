@@ -4,7 +4,6 @@
 \alias{profileCI-internal}
 \alias{profile_ci}
 \alias{faster_profile_ci}
-\alias{lagrangianInterpolation}
 \alias{initial_mvn}
 \title{Internal profileCI functions}
 \usage{
@@ -41,8 +40,6 @@ faster_profile_ci(
   ub,
   ...
 )
-
-lagrangianInterpolation(x0, y0)
 
 initial_mvn(object, x, x_value)
 }

@@ -52,8 +52,9 @@
 #'     that defines the confidence limits, once profiling has been successful
 #'     in finding an interval within which this value lies.
 #'
-#'    * If `epsilon[i] < 0` quadratic interpolation is used, which will tend to
-#'      be faster.
+#'    * If `epsilon[i] < 0` monotonic cubic spline interpolation
+#'      ([`stats::splinefun`] with `method = "hyman")` is used, which will tend
+#'      to be faster.
 #'
 #'   * If `epsilon[i] = 0` then linear interpolation is used, which will be
 #'     faster still.

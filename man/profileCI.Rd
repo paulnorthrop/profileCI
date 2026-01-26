@@ -74,8 +74,9 @@ to the \code{\link[itp:itp]{itp::itp}} function, which estimates the parameter v
 which the profile log-likelihood for parameter \code{i} drops to the value
 that defines the confidence limits, once profiling has been successful
 in finding an interval within which this value lies.
-\item If \code{epsilon[i] < 0} quadratic interpolation is used, which will tend to
-be faster.
+\item If \code{epsilon[i] < 0} monotonic cubic spline interpolation
+(\code{\link[stats:splinefun]{stats::splinefun}} with \verb{method = "hyman")} is used, which will tend
+to be faster.
 \item If \code{epsilon[i] = 0} then linear interpolation is used, which will be
 faster still.
 }}

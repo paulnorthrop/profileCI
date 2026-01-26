@@ -2,6 +2,7 @@
 
 ## Bug fixes and minor improvements
 
+* When the argument `epsilon` to `profileCI()` is negative, monotonic cubic spline interpolation is now used instead of quadratic interpolation. Quadratic interpolation could fail in some cases.
 * In the documentation of the argument `object` to `profileCI()` it is emphasized that the parameters in the fitted model object must have names.
 
 # profileCI 1.1.0
