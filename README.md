@@ -80,11 +80,23 @@ If the argument `faster = TRUE` then the searches for the lower and
 upper confidence limits are started from limits based on the approximate
 large sample normal distribution for the maximum likelihood estimator of
 a parameter, rather than the maximum likelihood estimate. The defaults
-are `mult = 32` and `faster = TRUE`.
+are `mult = 32` and `faster = FALSE`.
 
 ``` r
 library(profileCI)
-prof <- profileCI(glm.D93, loglik = poisson_loglik)
+prof <- profileCI(glm.D93, loglik = poisson_loglik, faster = TRUE)
+#>                   2.5%       97.5%
+#> (Intercept)  2.7095672  3.37947764
+#> outcome2    -0.8505027 -0.05800787
+#> outcome3    -0.6707552  0.08478093
+#> treatment2  -0.3919928  0.39199279
+#> treatment3  -0.3919928  0.39199279
+#>                   2.5%       97.5%
+#> (Intercept)  2.7095672  3.37947764
+#> outcome2    -0.8505027 -0.05800787
+#> outcome3    -0.6707552  0.08478093
+#> treatment2  -0.3919928  0.39199279
+#> treatment3  -0.3919928  0.39199279
 prof
 #>                   2.5%       97.5%
 #> (Intercept)  2.6958271  3.36656379
@@ -104,10 +116,10 @@ plot(prof, parm = "outcome2")
 <img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
 To obtain smooth version of this plot, we call `profileCI()` with
-`mult = 8` and `faster = FALSE`, but this is much slower calculation.
+`mult = 8` and `faster = FALSE`, but this is a much slower calculation.
 
 ``` r
-prof <- profileCI(glm.D93, loglik = poisson_loglik, mult = 8, faster = FALSE)
+prof <- profileCI(glm.D93, loglik = poisson_loglik, mult = 8)
 plot(prof, parm = "outcome2")
 ```
 
