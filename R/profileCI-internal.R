@@ -250,7 +250,7 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
       }
       # Find the upper limit of the confidence interval
       if (!flat_upper && !hit_ub) {
-        if (up_new > 0) {
+        if (up_new > conf_line) {
           interval <- c(x1up, save_up_lim)
         } else {
           interval <- c(save_up_lim, x2up)
@@ -263,7 +263,7 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
       }
       # Find the lower limit of the confidence interval
       if (!flat_lower && !hit_lb) {
-        if (low_new > 0) {
+        if (low_new > conf_line) {
           interval <- c(x1low, save_low_lim)
         } else {
           interval <- c(save_low_lim, x2low)
@@ -660,7 +660,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
         add_upper_prof <- NULL
         loc_upper <- n - 1
       } else {
-        add_upper_lim <- up_lim
+        add_upper_lim <- save_up_lim
         add_upper_prof <- up_new
       }
       if (flat_lower || hit_lb) {
@@ -668,7 +668,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
         add_lower_prof <- NULL
         loc_lower <- 1
       } else {
-        add_lower_lim <- low_lim
+        add_lower_lim <- save_low_lim
         add_lower_prof <- low_new
       }
       par_values <- c(par_values[1:loc_lower], add_lower_lim,
@@ -699,7 +699,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
       }
       # Find the upper limit of the confidence interval
       if (!flat_upper && !hit_ub) {
-        if (up_new > 0) {
+        if (up_new > conf_line) {
           interval <- c(x1up, save_up_lim)
         } else {
           interval <- c(save_up_lim, x2up)
@@ -712,7 +712,7 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
       }
       # Find the lower limit of the confidence interval
       if (!flat_lower && !hit_lb) {
-        if (low_new > 0) {
+        if (low_new > conf_line) {
           interval <- c(x1low, save_low_lim)
         } else {
           interval <- c(save_low_lim, x2low)
