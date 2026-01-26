@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# profileCI
+# profileCI <a href="https://paulnorthrop.github.io/profileCI/"><img src="man/figures/profileCI_logo.png" align="right" style="float:right; height:150px;" alt="profileCI logo"/></a>
 
 [![R-CMD-check](https://github.com/paulnorthrop/profileCI/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/paulnorthrop/profileCI/actions/workflows/R-CMD-check.yaml)
 [![Coverage
