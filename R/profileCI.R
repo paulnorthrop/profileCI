@@ -6,7 +6,10 @@
 #' generic.
 #'
 #' @param object A fitted model object. This object must have a `coef` S3
-#'   method. If `faster = TRUE` then it must also have a `vcov` S3 method.
+#'   method that returns a **named** vector of parameter values. If
+#'   `faster = TRUE` or `profile = FALSE` then it must also have a `vcov` S3
+#'   method that returns a matrix with `dimnames` that match those in the
+#'   vector returned by the `coef` method.
 #'   If necessary, these may be created using [`.S3method()`]. For example, if
 #'   `object` is a list inheriting from class `"foo"`, with coefficients
 #'   in `object$coefficients` and variance-covariance matrix in `object$vcov`,
@@ -170,7 +173,7 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
   # Check and set parm
   cf <- coef(object)
   if (is.null(names(cf))) {
-    names(cf) <- paste0("par", 1:length(cf))
+    stop("The parameters in coef(object) must be named.")
   }
   parm_names <- names(cf)
   if (is.character(parm)) {
@@ -222,6 +225,14 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
   # If profile = FALSE then we return these
   # If faster = TRUE then we pass these intervals to faster_profile_ci()
   if (!profile | faster) {
+    # Check that dimnames exist and match those in coef(object)
+    vnames <- dimnames(vcov(object))
+    if (is.null(vnames)) {
+      stop("The dimensions of vcov(object) must be named.")
+    }
+    if (any(vnames[[1]] != parm_names) || any(vnames[[2]] != parm_names)) {
+      stop("dimnames(vcov(object)) must match names(coef(object))")
+    }
     z_val <- stats::qnorm(1 - (1 - level) / 2)
     mles <- coef(object)[parm]
     ses <- sqrt(diag(vcov(object)))[parm]

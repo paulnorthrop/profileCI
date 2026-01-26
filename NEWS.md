@@ -1,3 +1,9 @@
+# profileCI 1.1.0.9000
+
+## Bug fixes and minor improvements
+
+* In the documentation of the argument `object` to `profileCI()` it is emphasized that the parameters in the fitted model object must have names.
+
 # profileCI 1.1.0
 
 ## New features

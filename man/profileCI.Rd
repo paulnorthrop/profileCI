@@ -22,7 +22,10 @@ profileCI(
 }
 \arguments{
 \item{object}{A fitted model object. This object must have a \code{coef} S3
-method. If \code{faster = TRUE} then it must also have a \code{vcov} S3 method.
+method that returns a \strong{named} vector of parameter values. If
+\code{faster = TRUE} or \code{profile = FALSE} then it must also have a \code{vcov} S3
+method that returns a matrix with \code{dimnames} that match those in the
+vector returned by the \code{coef} method.
 If necessary, these may be created using \code{\link[=.S3method]{.S3method()}}. For example, if
 \code{object} is a list inheriting from class \code{"foo"}, with coefficients
 in \code{object$coefficients} and variance-covariance matrix in \code{object$vcov},
