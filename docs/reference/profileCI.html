@@ -13,7 +13,7 @@ generic."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">profileCI</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,10 @@ generic.</p>
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>A fitted model object. This object must have a <code>coef</code> S3
-method. If <code>faster = TRUE</code> then it must also have a <code>vcov</code> S3 method.
+method that returns a <strong>named</strong> vector of parameter values. If
+<code>faster = TRUE</code> or <code>profile = FALSE</code> then it must also have a <code>vcov</code> S3
+method that returns a matrix with <code>dimnames</code> that match those in the
+vector returned by the <code>coef</code> method.
 If necessary, these may be created using <code><a href="https://rdrr.io/r/base/S3method.html" class="external-link">.S3method()</a></code>. For example, if
 <code>object</code> is a list inheriting from class <code>"foo"</code>, with coefficients
 in <code>object$coefficients</code> and variance-covariance matrix in <code>object$vcov</code>,
@@ -121,8 +124,10 @@ profiles at more points but will be slower.</p></dd>
 
 <dt id="arg-faster">faster<a class="anchor" aria-label="anchor" href="#arg-faster"></a></dt>
 <dd><p>A logical scalar. If <code>faster = TRUE</code> then the profiling of the
-log-likelihood is in search of a lower (upper) confidence limit is
-started at the corresponding symmetric lower (upper) confidence limit.</p></dd>
+log-likelihood in search of a lower (upper) confidence limit is
+started at the corresponding symmetric lower (upper) confidence limit.
+However, <code>faster = FALSE</code> is more robust, particularly if a symmetric
+limit is close to, or beyond, the edge of the parameter space.</p></dd>
 
 
 <dt id="arg-epsilon">epsilon<a class="anchor" aria-label="anchor" href="#arg-epsilon"></a></dt>
@@ -133,8 +138,9 @@ to the <code><a href="https://github.com/paulnorthrop/itp/reference/itp.html" cl
 which the profile log-likelihood for parameter <code>i</code> drops to the value
 that defines the confidence limits, once profiling has been successful
 in finding an interval within which this value lies.</p></li>
-<li><p>If <code>epsilon[i] &lt; 0</code> quadratic interpolation is used, which will tend to
-be faster.</p></li>
+<li><p>If <code>epsilon[i] &lt; 0</code> monotonic cubic spline interpolation
+(<code><a href="https://rdrr.io/r/stats/splinefun.html" class="external-link">stats::splinefun</a></code> with <code>method = "hyman")</code> is used, which will tend
+to be faster.</p></li>
 <li><p>If <code>epsilon[i] = 0</code> then linear interpolation is used, which will be
 faster still.</p></li>
 </ul></dd>

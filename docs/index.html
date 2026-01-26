@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">profileCI</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,8 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="profileci">profileCI<a class="anchor" aria-label="anchor" href="#profileci"></a>
+<div class="page-header"><h1 id="profileci-">profileCI <a href="https://paulnorthrop.github.io/profileCI/" class="external-link"><img src="reference/figures/profileCI_logo.png" align="right" style="float:right; height:150px;" alt="profileCI logo"></a>
+<a class="anchor" aria-label="anchor" href="#profileci-"></a>
 </h1></div>
 <p><a href="https://github.com/paulnorthrop/profileCI/actions/workflows/R-CMD-check.yaml"><img src="https://github.com/paulnorthrop/profileCI/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/github/paulnorthrop/profileCI?branch=master" class="external-link"><img src="https://codecov.io/github/paulnorthrop/profileCI/coverage.svg?branch=master" alt="Coverage Status"></a> <a href="https://cran.r-project.org/package=profileCI" class="external-link"><img src="https://www.r-pkg.org/badges/version/profileCI" alt="CRAN_Status_Badge"></a> <a href="https://cran.r-project.org/package=profileCI" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/profileCI?color=brightgreen" alt="Downloads (monthly)"></a> <a href="https://cran.r-project.org/package=profileCI" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/profileCI?color=brightgreen" alt="Downloads (total)"></a></p>
 <div class="section level2">
@@ -98,7 +99,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">prof</span>, parm <span class="op">=</span> <span class="st">"outcome2"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
-<p>To obtain smooth version of this plot, we call <code><a href="reference/profileCI.html">profileCI()</a></code> with <code>mult = 8</code> and <code>faster = FALSE</code>, but this is much slower calculation.</p>
+<p>To obtain smooth version of this plot, we call <code><a href="reference/profileCI.html">profileCI()</a></code> with <code>mult = 8</code> and <code>faster = FALSE</code>, but this is a much slower calculation.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prof</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/profileCI.html">profileCI</a></span><span class="op">(</span><span class="va">glm.D93</span>, loglik <span class="op">=</span> <span class="va">poisson_loglik</span>, mult <span class="op">=</span> <span class="fl">8</span>, faster <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">prof</span>, parm <span class="op">=</span> <span class="st">"outcome2"</span><span class="op">)</span></span></code></pre></div>

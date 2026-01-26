@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">profileCI</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,15 @@
       <small>Source: <a href="https://github.com/paulnorthrop/profileCI/blob/HEAD/NEWS.md"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.1" id="profileci-111">profileCI 1.1.1<a class="anchor" aria-label="anchor" href="#profileci-111"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-and-minor-improvements-1-1-1">Bug fixes and minor improvements<a class="anchor" aria-label="anchor" href="#bug-fixes-and-minor-improvements-1-1-1"></a></h3>
+<ul><li>When the argument <code>epsilon</code> to <code><a href="../reference/profileCI.html">profileCI()</a></code> is negative, monotonic cubic spline interpolation is now used instead of quadratic interpolation. Quadratic interpolation could fail in some cases.</li>
+<li>In the documentation of the argument <code>object</code> to <code><a href="../reference/profileCI.html">profileCI()</a></code> it is emphasized that the parameters in the fitted model object must have names.</li>
+<li>Fixed bugs in <code>profileCI-internal.R</code> to avoid storing some slightly incorrect parameter values near the confidence limits in the attribute <code>"for_plot"</code> in the returned object.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="profileci-110">profileCI 1.1.0<a class="anchor" aria-label="anchor" href="#profileci-110"></a></h2><p class="text-muted">CRAN release: 2025-07-11</p>
 <div class="section level3">
