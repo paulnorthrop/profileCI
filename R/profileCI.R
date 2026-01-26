@@ -258,7 +258,6 @@ profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
     if (any(is.finite(ub))) {
       ci_sym_mat[, 2] <- pmin(ci_sym_mat[, 2], ub - propn * (ub - cf[parm]))
     }
-    print(ci_sym_mat)
   } else {
     ci_mat <- matrix(NA, ncol = 2, nrow = length(parm))
   }
