@@ -15,8 +15,8 @@ test_that("Profile-based intervals for Poisson GLM", {
 
 # Repeat for the nls example
 
-DNase1 <- subset(datasets::DNase, Run == 1)
-fm1DNase1 <- nls(density ~ SSlogis(log(conc), Asym, xmid, scal), DNase1)
+fm1DNase1 <- nls(density ~ SSlogis(log(conc), Asym, xmid, scal),
+                 subset(datasets::DNase, Run == 1))
 prof1 <- profileCI(fm1DNase1, parm = 2)
 prof2 <- profileCI(fm1DNase1, parm = "xmid")
 
