@@ -185,9 +185,9 @@ profile_ci <- function(object, negated_loglik_fn, which = 1, level, mle, inc,
     low_lim <- x1low + (conf_line - y1low) * (x2low - x1low) / (y2low - y1low)
   }
 
-  # If epsilon = 0 then use linear interpolation
-  # If epsilon < 0 then use monotonic cubic spline interpolation
-  # If epsilon > 0 then use monotonic cubic spline and then itp::itp()
+  # If epsilon = 0 use linear interpolation
+  # If epsilon < 0 use monotonic cubic spline interpolation
+  # If epsilon > 0 use monotonic cubic spline interpolation then itp::itp()
 
   if (epsilon != 0) {
     # Calculate the values of the profile log-likelihood at these limits and
@@ -603,9 +603,9 @@ faster_profile_ci <- function(object, negated_loglik_fn, which = 1, which_name,
     low_lim <- x1low + (conf_line - y1low) * (x2low - x1low) / (y2low - y1low)
   }
 
-  # If epsilon = 0 then use linear interpolation
-  # If epsilon < 0 then use monotonic cubic spline interpolation
-  # If epsilon > 0 then use monotonic cubic spline interpolation and then itp::itp()
+  # If epsilon = 0 use linear interpolation
+  # If epsilon < 0 use monotonic cubic spline interpolation
+  # If epsilon > 0 use monotonic cubic spline interpolation then itp::itp()
 
   if (epsilon != 0) {
     # Calculate the values of the profile log-likelihood at these limits and
