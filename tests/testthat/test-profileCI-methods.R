@@ -12,3 +12,14 @@ test_that("Profile-based intervals for Poisson GLM", {
 test_that("Profile-based intervals for Poisson GLM", {
   expect_equal(interval2, my_prof["outcome2", ])
 })
+
+# Repeat for the nls example
+
+DNase1 <- subset(DNase, Run == 1)
+fm1DNase1 <- nls(density ~ SSlogis(log(conc), Asym, xmid, scal), DNase1)
+prof1 <- profileCI(fm1DNase1, parm = 2)
+prof2 <- profileCI(fm1DNase1, parm = "xmid")
+
+test_that("Profile-based intervals for non-linear least squares regression", {
+  expect_equal(prof1, prof2)
+})
