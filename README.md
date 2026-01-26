@@ -87,11 +87,11 @@ library(profileCI)
 prof <- profileCI(glm.D93, loglik = poisson_loglik)
 prof
 #>                   2.5%       97.5%
-#> (Intercept)  2.6958263  3.36656451
-#> outcome2    -0.8576896 -0.06255495
-#> outcome3    -0.6753605  0.08244144
-#> treatment2  -0.3932497  0.39324971
-#> treatment3  -0.3932497  0.39324971
+#> (Intercept)  2.6958271  3.36656379
+#> outcome2    -0.8576884 -0.06255514
+#> outcome3    -0.6753594  0.08244109
+#> treatment2  -0.3932489  0.39324886
+#> treatment3  -0.3932489  0.39324886
 ```
 
 We can visualise the profile likelihood for a parameter using a plot
