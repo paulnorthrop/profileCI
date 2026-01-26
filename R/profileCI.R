@@ -42,7 +42,7 @@
 #' @param faster A logical scalar. If `faster = TRUE` then the profiling of the
 #'   log-likelihood in search of a lower (upper) confidence limit is
 #'   started at the corresponding symmetric lower (upper) confidence limit.
-#'   The default, `faster = FALSE`, is more robust, particularly if a symmetric
+#'   However, `faster = FALSE` is more robust, particularly if a symmetric
 #'   limit is close to, or beyond, the edge of the parameter space.
 #' @param epsilon Only relevant if `profile = TRUE`. A numeric vector of values
 #'   that determine the accuracy of the confidence limits. `epsilon` is
@@ -154,7 +154,7 @@
 #' prof
 #' @export
 profileCI <- function(object, loglik, ..., parm = "all", level = 0.95,
-                      profile = TRUE, mult = 32, faster = FALSE, epsilon = -1,
+                      profile = TRUE, mult = 32, faster = TRUE, epsilon = -1,
                       flat = 1e-6, lb, ub, optim_args = list()) {
   # Force flat to be positive
   flat <- abs(flat)

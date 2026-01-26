@@ -12,7 +12,7 @@ profileCI(
   level = 0.95,
   profile = TRUE,
   mult = 32,
-  faster = FALSE,
+  faster = TRUE,
   epsilon = -1,
   flat = 1e-06,
   lb,
@@ -64,7 +64,7 @@ profiles at more points but will be slower.}
 \item{faster}{A logical scalar. If \code{faster = TRUE} then the profiling of the
 log-likelihood in search of a lower (upper) confidence limit is
 started at the corresponding symmetric lower (upper) confidence limit.
-The default, \code{faster = FALSE}, is more robust, particularly if a symmetric
+However, \code{faster = FALSE} is more robust, particularly if a symmetric
 limit is close to, or beyond, the edge of the parameter space.}
 
 \item{epsilon}{Only relevant if \code{profile = TRUE}. A numeric vector of values
