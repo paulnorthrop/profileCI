@@ -114,10 +114,11 @@ plot(prof, parm = "outcome2")
 <img src="man/figures/README-unnamed-chunk-6-1.png" alt="Smooth plot of the profile log-likelihood for the parameter outcome2" width="100%" />
 
 By default, once it has been determined that a limit lies between two
-values of the parameter, quadratic interpolation is used to estimate the
-value of the limit. If a specific degree of accuracy is required then
-this can be set by passing a positive tolerance `epsilon` to the `itp`
-function in the [itp package](https://cran.r-project.org/package=itp).
+values of the parameter, monotonic cubic spline interpolation is used to
+estimate the value of the limit. If a specific degree of accuracy is
+required then this can be set by passing a positive tolerance `epsilon`
+to the `itp` function in the [itp
+package](https://cran.r-project.org/package=itp).
 
 An alternative to passing the log-likelihood function using the argument
 `loglik` is to provide the same function via a `logLikFn` S3 method for
